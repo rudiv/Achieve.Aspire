@@ -32,18 +32,6 @@ thing.
 be available for v1/GA, you're going to need to still do a tiny bit of manual editing on the container YAML template
 files, or you can compile azd from [my branch here](https://github.com/rudiv/azure-dev/tree/aspire-project-uai) and it will magically work.
 
-## What's supported
-
-Very little, here's a list of stuff I want and will be here very soon.
-
-- [x] (0.1.0) Managed Identities
-- [x] (0.1.0) Key Vault Managed Identity
-- [x] (0.1.0) Key Vault Secrets (from other Bicep variables)
-- [x] (0.1.0) Add Managed Identity to Project
-- [ ] Storage Managed Identity
-- [ ] CosmosDB Full-Fidelity
-- [ ] CosmosDB Managed Identity w/ SQL Roles
-
 ## How to use it
 
 Add it! `Rudi.Dev.Aspire.Provisioning.RealWorld` on NuGet.
@@ -105,3 +93,33 @@ Then add the client ID to the environment variables, eg:
 
 You can then create a `DefaultAzureCredential` with the Client ID from `MYID_CLIENT_ID` for use. Alternatively, if you're
 removing the default terribleness, just call it `AZURE_CLIENT_ID` and `DefaultAzureCredential` will use this automatically.
+
+
+## What's supported
+
+Very little, here's a list of stuff I want and will be here very soon.
+
+- [x] (0.1.0) Managed Identities
+- [x] (0.1.0) Key Vault Managed Identity
+- [x] (0.1.0) Key Vault Secrets (from other Bicep variables)
+- [x] (0.1.0) Add Managed Identity to Project
+- [ ] Storage Managed Identity
+- [ ] CosmosDB Full-Fidelity
+- [ ] CosmosDB Managed Identity w/ SQL Roles
+
+Note that very much what isn't supported right now is local dev against these resources. The resources created here will
+only work at publishing type.
+
+Wrap these resources in publish mode like this:
+```csharp
+IResourceBuilder<AzureKeyVaultResource> kv;
+if (builder.ExecutionContext.IsPublishMode)
+{
+    kv = builder.AddAzureKeyVault(...);
+}
+else
+{
+    var id = builder.AddManagedIdentity(..);
+    kv = builder.AddZtAzureKeyVault(..);
+}
+```
