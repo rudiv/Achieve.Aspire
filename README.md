@@ -47,7 +47,7 @@ Very little, here's a list of stuff I want and will be here very soon.
 
 Add it! `Rudi.Dev.Aspire.Provisioning.RealWorld` on NuGet.
 
-### Create your actual identities
+### Create your actual identities & resources
 
 ```csharp
 // NOTE - Don't use hyphens in this, it will partially break Bicep generation despite "Name must contain only ASCII letters, digits, and hyphens."
@@ -99,6 +99,8 @@ Then add the client ID to the environment variables, eg:
       - name: MYID_CLIENT_ID
         value: '{{ .Env.MYIDENTITY_CLIENTID }}'
 ```
+
+## Usage in Apps
 
 You can then create a `DefaultAzureCredential` with the Client ID from `MYID_CLIENT_ID` for use. Alternatively, if you're
 removing the default terribleness, just call it `AZURE_CLIENT_ID` and `DefaultAzureCredential` will use this automatically.
