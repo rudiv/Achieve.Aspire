@@ -31,13 +31,21 @@ thing.
 be available for v1/GA, you're going to need to still do a tiny bit of manual editing on the container YAML template
 files, or you can compile azd from [my branch here](https://github.com/rudiv/azure-dev/tree/aspire-project-uai) and it will magically work.
 
+## What's supported
+
+Very little, here's a list of stuff I want and will be here very soon.
+
+- [x] (0.1.0) Managed Identities
+- [x] (0.1.0) Key Vault Managed Identity
+- [x] (0.1.0) Key Vault Secrets (from other Bicep variables)
+- [x] (0.1.0) Add Managed Identity to Project
+- [ ] Storage Managed Identity
+- [ ] CosmosDB Full-Fidelity
+- [ ] CosmosDB Managed Identity w/ SQL Roles
+
 ## How to use it
 
-Add it!
-
-```
-dotnet nuget add package Rudi.Dev.Aspire.RealWorld
-```
+Add it! `Rudi.Dev.Aspire.Provisioning.RealWorld` on NuGet.
 
 ### Create your actual identities
 
@@ -45,7 +53,7 @@ dotnet nuget add package Rudi.Dev.Aspire.RealWorld
 // NOTE - Don't use hyphens in this, it will partially break Bicep generation despite "Name must contain only ASCII letters, digits, and hyphens."
 var id = builder.AddManagedIdentity("myidentity");
 
-// Key Vault
+// Key Vault Zero Trust
 var kv = builder.AddZtAzureKeyVault("mykv", b => {
     b.AddManagedIdentity(id, KeyVaultRoles.SecretsUser);
 });
