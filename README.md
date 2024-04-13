@@ -5,7 +5,8 @@ Eugh, love love love .NET Aspire.
 In preview it's perfect right now for toy projects, but let's say we want to use it in the real world! It's... not
 possible.
 
-Well, it's not possible without `azd infra synth` and a _lot_ of manual editing. See [this discussion](https://github.com/Azure/azure-dev/discussions/3184) for some future direction.
+Well, it's not possible without `azd infra synth` and a _lot_ of manual editing. See [this discussion](https://github.com/Azure/azure-dev/discussions/3184) for some future direction and
+note that the issues addressed here are known and will be fixed post-GA.
 
 Obligatory warning: This is a hack. For a preview product from Microsoft. Backed by legends (David Fowler & Damian
 Edwards). Don't use it if you squirm at the thought of Reflection and other such trickery. Things **WILL** get better,
@@ -16,7 +17,7 @@ and this library **WILL NOT** be needed, hopefully very soon.
 Aspire is very very opinionated and based around each of your containers/apps running as the same identity. Oh and
 adding that identity as an Administrator / Global Access to everything it creates.
 
-Unfortunately you can't override this behaviour even with the construct configuration in P5.
+Unfortunately you can't override this behaviour even with the excellent construct configuration in P5.
 
 Anyway, let's obviously not do that in production. Just because 1 app might need access to something doesn't mean that
 it, and all other apps should have access to everything.
