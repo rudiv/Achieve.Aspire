@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Library</OutputType>
+        <IsPackable>true</IsPackable>
+        <PackageId>Rudi.Dev.Aspire.Provisioning.RealWorld</PackageId>
+        <RepositoryUrl>https://github.com/rudiv/Rudi.Dev.Aspire.Provisioning.RealWorld</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>aspire hosting azure provisioning keyvault managedidentity</PackageTags>
+        <Description>Adds missing support for securely deployed resources with Aspire.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+        <MinVerDefaultPreReleaseIdentifiers>preview.5</MinVerDefaultPreReleaseIdentifiers>
+        <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\README.md" Pack="true" PackagePath="\">
+        <Link>README.md</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Aspire.Hosting.Azure" Version="8.0.0-preview.5.24201.12" />
+      <PackageReference Include="Aspire.Hosting.Azure.KeyVault" Version="8.0.0-preview.5.24201.12" />
+      <PackageReference Include="Azure.Provisioning" Version="0.1.0-beta.2" />
+      <PackageReference Include="MinVer" Version="5.0.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+</Project>
