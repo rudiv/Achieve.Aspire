@@ -61,5 +61,44 @@ var kv = builder.AddZtAzureKeyVault("mykv", b => {
 // Add a Managed Identity to a project
 // Note this just outputs it to the manifest, you will need to update the YAML or use the azd branch above
 builder.AddProject<Projects.MyProject>("myproject")
-    .WithManagedIdentity(id);
+    .WithManagedIdentity("MYID", id);
 ```
+
+### (If not using custom azd) Update Bicep / YAML Resources
+
+You'll need to `azd infra synth`.
+
+In the `main.bicep` file, add the following to the end with the other exports:
+
+```
+output MYIDENTITY_CLIENTID string = myidentity.outputs.clientId
+output MYIDENTITY_RESOURCEID string = myidentity.outputs.ResourceId
+```
+
+In each project's `containerapp.tmpl.yaml`, add the Resource ID to the `userAssignedIdentities`, eg:
+
+```yaml
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    '{{ .Env.MYIDENTITY_RESOURCEID }}': {}
+    ? "{{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}"
+    : {}
+```
+
+You can (and also should) probably remove the default managed identity.
+
+Then add the client ID to the environment variables, eg:
+
+```yaml
+      env:
+      - name: AZURE_CLIENT_ID
+        value: {{ .Env.MANAGED_IDENTITY_CLIENT_ID }}
+      - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+        value: "true"
+      - name: MYID_CLIENT_ID
+        value: '{{ .Env.MYIDENTITY_CLIENTID }}'
+```
+
+You can then create a `DefaultAzureCredential` with the Client ID from `MYID_CLIENT_ID` for use. Alternatively, if you're
+removing the default terribleness, just call it `AZURE_CLIENT_ID` and `DefaultAzureCredential` will use this automatically.
