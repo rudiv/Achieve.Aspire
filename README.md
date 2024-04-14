@@ -1,40 +1,35 @@
-# Aspire for the Real World
+![Aspire Achieve](https://raw.githubusercontent.com/rudiv/Aspire.Achieve/main/assets/aspire-achieve.svg)
 
-Eugh, love love love .NET Aspire.
+# Achieve (for Aspire)
 
-In preview it's perfect right now for toy projects, but let's say we want to use it in the real world! It's... not
-possible.
+Achieve adds missing provisioning support to [.NET Aspire](https://github.com/dotnet/aspire) for real-world applications.
 
-Well, it's not possible without `azd infra synth` and a _lot_ of manual editing. See [this discussion](https://github.com/Azure/azure-dev/discussions/3184) for some future direction and
-note that the issues addressed here are known and will be fixed post-GA.
+### What is .NET Aspire?
 
-Obligatory warning: This is a hack. For a preview product from Microsoft. Backed by legends (David Fowler & Damian
-Edwards). Don't use it if you squirm at the thought of Reflection and other such trickery. Things **WILL** get better,
-and this library **WILL NOT** be needed, hopefully very soon.
+Aspire is an opinionated, cloud ready stack for building observable, production ready, distributed applications.
 
-### What why
+[Learn more](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview).
 
-Aspire is very very opinionated and based around each of your containers/apps running as the same identity. Oh and
-adding that identity as an Administrator / Global Access to everything it creates.
+### What is Achieve?
 
-Unfortunately you can't override this behaviour even with the excellent construct configuration in P5.
+Achieve augments Aspire at deployment time by adding replacements for the built in Aspire.Hosting.Azure.* packages that
+allow for more real-world scenarios on proper applications that need to run on Azure.
 
-Anyway, let's obviously not do that in production. Just because 1 app might need access to something doesn't mean that
-it, and all other apps should have access to everything.
+## Why is Achieve needed?
 
-### So what is this
+To achieve (pun intended) real-world scenarios when using .NET Aspire (for now and at least GA release), you need to run
+`azd infra synth` and manually edit the generated Bicep and YAML. The long term goal of Aspire is to allow for more
+configuration within the AppHost, but right now that's simply not supported.
 
-This basically augments what's already there with proper, actually usable versions of the Aspire.Hosting.Azure.*
-packages (at least the ones we need currently) that just forget about that whole "run everything as the same identity"
-thing.
+The primary issues that Achieve aims to solve are:
 
-[My PR](https://github.com/dotnet/aspire/pull/3339) tries to go some way to do what this does, but it's rejected and no workaround will
-be available for v1/GA, you're going to need to still do a tiny bit of manual editing on the container YAML template
-files, or you can compile azd from [my branch here](https://github.com/rudiv/azure-dev/tree/aspire-project-uai) and it will magically work.
+- The single identity / principal assigned to all projects by default
+- The lack of finely grained control around Role Assignments in Azure
+- Missing built-in Aspire Resources to configure Identities
 
 ## How to use it
 
-Add it! `Rudi.Dev.Aspire.Provisioning.RealWorld` on NuGet.
+Add it! `Aspire.Achieve.AzureProvisioning` on NuGet.
 
 ### Create your actual identities & resources
 
@@ -52,6 +47,15 @@ var kv = builder.AddZtAzureKeyVault("mykv", b => {
 builder.AddProject<Projects.MyProject>("myproject")
     .WithManagedIdentity("MYID", id);
 ```
+
+### (If comfortable using custom azd) Build custom azd
+
+My branch of azd knows how to wire up the managed identity to the project by adding support for a "userAssignedIdentities"
+key to the Aspire manifest.
+
+[View / Clone the branch from here](https://github.com/rudiv/azure-dev/tree/aspire-project-uai)
+
+Then, simply run your own compiled version of `azd` against your project as you would normally (`azd up`, etc).
 
 ### (If not using custom azd) Update Bicep / YAML Resources
 
@@ -94,6 +98,10 @@ Then add the client ID to the environment variables, eg:
 You can then create a `DefaultAzureCredential` with the Client ID from `MYID_CLIENT_ID` for use. Alternatively, if you're
 removing the default terribleness, just call it `AZURE_CLIENT_ID` and `DefaultAzureCredential` will use this automatically.
 
+You can do this automatically by changing the `.WithManagedIdentity("MYID", id)` to `.WithManagedIdentity("AZURE", id)`.
+
+**Important** Even when using the custom `azd` as above, this won't remove the default assignment. You'll still need to
+do that manually.
 
 ## What's supported
 

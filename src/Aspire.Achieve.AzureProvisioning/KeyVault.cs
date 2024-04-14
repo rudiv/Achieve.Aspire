@@ -7,7 +7,7 @@ using Azure.Provisioning.Authorization;
 using Azure.Provisioning.KeyVaults;
 using Azure.ResourceManager.Authorization.Models;
 
-namespace Rudi.Dev.Aspire.Provisioning.RealWorld;
+namespace Aspire.Achieve.AzureProvisioning;
 
 public static class KeyVaultExtensions
 {
@@ -33,8 +33,7 @@ public static class KeyVaultExtensions
             for (int i = 0; i < kvOpts.ManagedIdentities.Count; i++)
             {
                 var (identity, role) = kvOpts.ManagedIdentities[i];
-                // Yes, I know it's MD5. It's not important.
-                var raGuid = new Guid(MD5.HashData(Encoding.UTF8.GetBytes(identity.Resource.Name)));
+                var raGuid = Helpers.StableGuid(identity.Resource.Name);
                 var roleAssignment = keyVault.AssignRole(
                     role,
                     principalId: raGuid,

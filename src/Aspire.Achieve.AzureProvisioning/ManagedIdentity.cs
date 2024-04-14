@@ -7,7 +7,7 @@ using Aspire.Hosting.Azure;
 using Aspire.Hosting.Publishing;
 using Azure.Provisioning.ManagedServiceIdentities;
 
-namespace Rudi.Dev.Aspire.Provisioning.RealWorld;
+namespace Aspire.Achieve.AzureProvisioning;
 
 public static class ManagedIdentityExtensions
 {
