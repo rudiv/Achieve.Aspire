@@ -31,4 +31,4 @@ jobs:
 
     - name: Publish
       if: steps.build.outcome == 'success'
-      run: dotnet nuget push ./src/Rudi.Dev.Aspire.Provisioning.RealWorld/bin/Release/*.nupkg --api-key ${{secrets.NUGET_PAT}} --skip-duplicate -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./src/Aspire.Achieve.AzureProvisioning/bin/Release/*.nupkg --api-key ${{secrets.NUGET_PAT}} --skip-duplicate -s https://api.nuget.org/v3/index.json
