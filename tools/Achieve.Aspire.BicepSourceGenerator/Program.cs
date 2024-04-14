@@ -1,0 +1,94 @@
+﻿// Evil, if anyone wants to help auto generate stuff, help :)
+
+using System.Collections.Immutable;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Azure.Bicep.Types.Az;
+using Bicep.Core.Semantics;
+using Bicep.Core.TypeSystem;
+using Bicep.Core.TypeSystem.Providers;
+using Bicep.Core.TypeSystem.Providers.Az;
+using Bicep.Core.TypeSystem.Types;
+
+var resourceTypeLoader = new AzResourceTypeLoader(new AzTypeLoader());
+var provider = new AzResourceTypeProvider(resourceTypeLoader);
+
+IReadOnlyCollection<(string, bool)> typesWeWant = [
+    ("Microsoft.Authorization/roleAssignments", false)
+];
+
+var allTypes = provider.GetAvailableTypes().ToList();
+foreach(var type in typesWeWant)
+{
+    var filteredTypes = allTypes.Where(m => m.Name.StartsWith(type.Item1));
+    if(!type.Item2)
+    {
+        filteredTypes = filteredTypes.Where(m => !m.Name.EndsWith("-preview"));
+    }
+    
+    // We want to get the latest, where .ApiVersion is a date with optional "-preview" at the end
+    var latest = filteredTypes.OrderByDescending(m => m.ApiVersion).FirstOrDefault();
+    
+    var ns2 = new NamespaceType(
+        "ns2",
+        new NamespaceSettings(
+            IsSingleton: true,
+            BicepProviderName: "ns2",
+            ConfigurationType: null,
+            ArmTemplateProviderName: "Ns2-Unused",
+            ArmTemplateProviderVersion: "1.0"),
+        ImmutableArray<TypeProperty>.Empty,
+        new[] {
+            new FunctionOverloadBuilder("ns2Func").Build(),
+            new FunctionOverloadBuilder("dupeFunc").Build(),
+        },
+        ImmutableArray<BannedFunction>.Empty,
+        ImmutableArray<Decorator>.Empty,
+        new EmptyResourceTypeProvider());
+    var defType = provider.TryGetDefinedType(ns2, latest, ResourceTypeGenerationFlags.None);
+
+    var visited = new HashSet<TypeSymbol>();
+    VisitAllReachableTypes(defType.Body.Type, visited);
+    Console.WriteLine(JsonSerializer.Serialize(defType.Body.Type, new JsonSerializerOptions { WriteIndented = true, ReferenceHandler = ReferenceHandler.IgnoreCycles}));
+}
+
+
+
+static void VisitAllReachableTypes(TypeSymbol typeSymbol, HashSet<TypeSymbol> visited)
+{
+    if (visited.Contains(typeSymbol))
+    {
+        return;
+    }
+    visited.Add(typeSymbol);
+
+    switch (typeSymbol)
+    {
+        case ArrayType arrayType:
+            VisitAllReachableTypes(arrayType.Item.Type, visited);
+            return;
+        case ObjectType objectType:
+            foreach (var property in objectType.Properties)
+            {
+                VisitAllReachableTypes(property.Value.TypeReference.Type, visited);
+            }
+            if (objectType.AdditionalPropertiesType != null)
+            {
+                VisitAllReachableTypes(objectType.AdditionalPropertiesType.Type, visited);
+            }
+            return;
+        case ResourceType resourceType:
+            VisitAllReachableTypes(resourceType.Body.Type, visited);
+            return;
+        case UnionType unionType:
+            foreach (var member in unionType.Members)
+            {
+                VisitAllReachableTypes(member.Type, visited);
+            }
+            return;
+        case StringLiteralType stringLiteralType:
+            return;
+        case DiscriminatedObjectType discriminatedObjectType:
+            return;
+    }
+}
