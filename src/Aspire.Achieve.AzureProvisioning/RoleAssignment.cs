@@ -7,7 +7,6 @@ namespace Aspire.Achieve.AzureProvisioning;
 
 public static class RoleAssignmentExtensions
 {
-    
     public static IResourceBuilder<AzureRoleAssignmentResource> AddAzureRoleAssignment(this IDistributedApplicationBuilder builder,
         IResourceBuilder<Resource> targetResource,
         IResourceBuilder<AzureManagedIdentityResource> managedIdentity,

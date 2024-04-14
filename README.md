@@ -1,4 +1,4 @@
-![Aspire Achieve](https://raw.githubusercontent.com/rudiv/Aspire.Achieve/main/assets/aspire-achieve.svg)
+![Aspire Achieve](https://github.com/rudiv/Aspire.Achieve/blob/main/assets/aspire-achieve.png?raw=true)
 
 # Achieve (for Aspire)
 
