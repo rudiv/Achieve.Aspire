@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Azure;
@@ -7,7 +5,7 @@ using Azure.Provisioning.Authorization;
 using Azure.Provisioning.KeyVaults;
 using Azure.ResourceManager.Authorization.Models;
 
-namespace Aspire.Achieve.AzureProvisioning;
+namespace Achieve.Aspire.AzureProvisioning;
 
 public static class KeyVaultExtensions
 {

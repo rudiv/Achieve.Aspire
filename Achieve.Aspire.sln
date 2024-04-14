@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.Achieve.AzureProvisioning", "src\Aspire.Achieve.AzureProvisioning\Aspire.Achieve.AzureProvisioning.csproj", "{2ED7754C-9844-447C-9637-36C483786D4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achieve.Aspire.AzureProvisioning", "src\Achieve.Aspire.AzureProvisioning\Achieve.Aspire.AzureProvisioning.csproj", "{2ED7754C-9844-447C-9637-36C483786D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

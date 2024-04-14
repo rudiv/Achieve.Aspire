@@ -3,7 +3,7 @@ using Aspire.Hosting.ApplicationModel;
 using Azure.Provisioning.Authorization;
 using Azure.ResourceManager.Authorization.Models;
 
-namespace Aspire.Achieve.AzureProvisioning;
+namespace Achieve.Aspire.AzureProvisioning;
 
 public static class RoleAssignmentExtensions
 {

@@ -6,8 +6,8 @@
         <Nullable>enable</Nullable>
         <OutputType>Library</OutputType>
         <IsPackable>true</IsPackable>
-        <PackageId>Aspire.Achieve.AzureProvisioning</PackageId>
-        <RepositoryUrl>https://github.com/rudiv/Aspire.Achieve</RepositoryUrl>
+        <PackageId>Achieve.Aspire.AzureProvisioning</PackageId>
+        <RepositoryUrl>https://github.com/rudiv/Achieve.Aspire</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIconUrl>assets/aspire-achieve.png</PackageIconUrl>
         <PackageTags>aspire hosting azure provisioning keyvault managedidentity achieve</PackageTags>
@@ -16,6 +16,7 @@
         <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
         <MinVerDefaultPreReleaseIdentifiers>preview.5</MinVerDefaultPreReleaseIdentifiers>
         <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+        <RootNamespace>Achieve.Aspire.AzureProvisioning</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

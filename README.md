@@ -1,4 +1,4 @@
-![Aspire Achieve](https://github.com/rudiv/Aspire.Achieve/blob/main/assets/aspire-achieve.png?raw=true)
+![Aspire Achieve](https://github.com/rudiv/Achieve.Aspire/blob/main/assets/aspire-achieve.png?raw=true)
 
 # Achieve (for Aspire)
 
@@ -29,7 +29,7 @@ The primary issues that Achieve aims to solve are:
 
 ## How to use it
 
-Add it! `Aspire.Achieve.AzureProvisioning` on NuGet.
+Add it! `Achieve.Aspire.AzureProvisioning` on NuGet.
 
 ### Create your actual identities & resources
 

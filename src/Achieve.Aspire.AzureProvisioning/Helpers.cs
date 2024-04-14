@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Aspire.Achieve.AzureProvisioning;
+namespace Achieve.Aspire.AzureProvisioning;
 
 public static class Helpers
 {
