@@ -11,8 +11,8 @@ namespace Achieve.Aspire.AzureProvisioning;
 
 public static class ManagedIdentityExtensions
 {
-    public const string ResourceId = nameof(ResourceId);
-    public const string PrincipalId = nameof(PrincipalId);
+    public const string ResourceId = "resourceId";
+    public const string PrincipalId = "principalId";
 
     public const string ClientId = "clientId";
     // For consumption by https://github.com/rudiv/azure-dev/tree/aspire-project-uai

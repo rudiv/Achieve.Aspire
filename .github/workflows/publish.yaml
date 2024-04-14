@@ -21,12 +21,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-#    - name: Test
-#      id: test run: dotnet test
+    - name: Test
+      id: test run: dotnet test
 
     - name: Build & Package
       id: build
-      #if: steps.test.outcome == 'success'
+      if: steps.test.outcome == 'success'
       run: dotnet pack -c Release --no-restore
 
     - name: Publish

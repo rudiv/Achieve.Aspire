@@ -42,7 +42,7 @@ public static class KeyVaultExtensions
             foreach (var (name, opr) in kvOpts.Secrets)
             {
                 var kvSecret = new KeyVaultSecret(construct, keyVault, name);
-                kvSecret.AssignProperty(x => x.Properties.Value, opr.ValueExpression);
+                kvSecret.AssignProperty(x => x.Properties.Value, opr);
             }
 
             var resource = (AzureKeyVaultResource)construct.Resource;
