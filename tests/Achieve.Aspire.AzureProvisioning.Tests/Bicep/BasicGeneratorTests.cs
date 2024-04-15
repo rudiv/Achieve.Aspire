@@ -41,10 +41,10 @@ public class BasicGeneratorTests(ITestOutputHelper output)
     public void ResourceGeneratesCorrectHeader()
     {
         var emptyResource = new EmptyResource("test");
-        Assert.Equal("resource test 'Test/test@2023-01-01' = {\n}", emptyResource.ToBicepSyntax().ToString());
+        Assert.Equal("resource test 'Test/test@2023-01-01' = {}", emptyResource.ToBicepSyntax().ToString());
 
         emptyResource.Existing = true;
-        Assert.Equal("resource test 'Test/test@2023-01-01' existing = {\n}", emptyResource.ToBicepSyntax().ToString());
+        Assert.Equal("resource test 'Test/test@2023-01-01' existing = {}", emptyResource.ToBicepSyntax().ToString());
     }
 
     [Fact]

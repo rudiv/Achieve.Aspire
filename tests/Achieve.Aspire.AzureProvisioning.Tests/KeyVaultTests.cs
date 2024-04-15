@@ -44,7 +44,7 @@ public class KeyVaultTests(ITestOutputHelper output)
         // Parsing this with Bicep to account for any potential changes in any other properties that are output
         var parser = new Parser(keyVaultManifestBicep.BicepText);
         var program = parser.Program();
-        Assert.Equal(8, program.Declarations.Count());
+        Assert.Equal(9, program.Declarations.Count());
 
         var kvResource = program.Declarations.ElementAt(4) as ResourceDeclarationSyntax;
         var roleResource = program.Declarations.ElementAt(5) as ResourceDeclarationSyntax;

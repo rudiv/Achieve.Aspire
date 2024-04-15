@@ -38,9 +38,13 @@ public abstract class BicepResource(string type) : IBicepSyntaxGenerator
     {
         var indentStr = new string(' ', indent);
         var indentBack = new string(' ', indent - 2);
-        var children = new List<SyntaxBase> { SyntaxFactory.CreateNewLineWithIndent(indentStr) };
-
+        var children = new List<SyntaxBase>();
         var propertyList = properties.ToList();
+        if (propertyList.Count > 0)
+        {
+            children.Add(SyntaxFactory.CreateNewLineWithIndent(indentStr));
+        }
+        
         for(int i = 0; i < propertyList.Count; i++)
         {
             children.Add(propertyList[i]);
