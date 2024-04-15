@@ -10,6 +10,8 @@ using Bicep.Core.TypeSystem.Providers;
 using Bicep.Core.TypeSystem.Providers.Az;
 using Bicep.Core.TypeSystem.Types;
 
+
+
 var resourceTypeLoader = new AzResourceTypeLoader(new AzTypeLoader());
 var provider = new AzResourceTypeProvider(resourceTypeLoader);
 

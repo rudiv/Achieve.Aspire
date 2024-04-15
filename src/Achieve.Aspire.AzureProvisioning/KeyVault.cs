@@ -22,6 +22,7 @@ public static class KeyVaultExtensions
         var configureConstruct = (ResourceModuleConstruct construct) =>
         {
             var keyVault = construct.AddKeyVault(name: construct.Resource.Name);
+            keyVault.AddOutput("name", x => x.Name);
             keyVault.AddOutput("vaultUri", x => x.Properties.VaultUri);
 
             keyVault.Properties.Tags["aspire-resource-name"] = construct.Resource.Name;

@@ -46,6 +46,9 @@ var kv = builder.AddZtAzureKeyVault("mykv", b => {
 // Note this just outputs it to the manifest, you will need to update the YAML or use the azd branch above
 builder.AddProject<Projects.MyProject>("myproject")
     .WithManagedIdentity("MYID", id);
+
+// You can also add Role Assignments to resources manually (currently only KV supported)
+builder.AddRoleAssignment(kv, id, KeyVaultRoles.SecretsUser);
 ```
 
 ### (If comfortable using custom azd) Build custom azd

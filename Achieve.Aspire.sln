@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achieve.Aspire.AzureProvisi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{DA8CBF11-5AA1-4CF8-9F5D-5B2D697D36BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achieve.Aspire.BicepSourceGenerator", "tools\Achieve.Aspire.BicepSourceGenerator\Achieve.Aspire.BicepSourceGenerator.csproj", "{0498049F-98C9-4A60-A056-A2D39CEF73BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achieve.Aspire.BicepPlayground", "tools\Achieve.Aspire.BicepPlayground\Achieve.Aspire.BicepPlayground.csproj", "{0498049F-98C9-4A60-A056-A2D39CEF73BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

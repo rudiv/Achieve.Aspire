@@ -1,9 +1,9 @@
 using System.DirectoryServices;
 using Bicep.Core.Syntax;
 
-namespace Achieve.Aspire.AzureProvisioning.Bicep;
+namespace Achieve.Aspire.AzureProvisioning.Bicep.Internal;
 
-internal record BicepOutput(string Name, BicepSupportedType Type, string Path) : IBicepSyntaxGenerator
+public record BicepOutput(string Name, BicepSupportedType Type, string Path) : IBicepSyntaxGenerator
 {
     public SyntaxBase ToBicepSyntax() => new OutputDeclarationSyntax(
         [],

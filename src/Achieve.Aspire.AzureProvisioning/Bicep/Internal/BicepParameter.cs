@@ -1,8 +1,8 @@
 using Bicep.Core.Syntax;
 
-namespace Achieve.Aspire.AzureProvisioning.Bicep;
+namespace Achieve.Aspire.AzureProvisioning.Bicep.Internal;
 
-internal record BicepParameter(string Name, BicepSupportedType Type, string? DefaultValue = default, string? Description = default) : IBicepSyntaxGenerator
+public record BicepParameter(string Name, BicepSupportedType Type, BicepValue? DefaultValue = default, string? Description = default) : IBicepSyntaxGenerator
 {
     public SyntaxBase ToBicepSyntax() =>
         new ParameterDeclarationSyntax(GetDescriptionSyntax(),
@@ -27,7 +27,7 @@ internal record BicepParameter(string Name, BicepSupportedType Type, string? Def
     {
         if (DefaultValue == null) return default;
 
-        return new ParameterDefaultValueSyntax(SyntaxFactory.AssignmentToken, SyntaxFactory.CreateStringLiteral(DefaultValue));
+        return new ParameterDefaultValueSyntax(SyntaxFactory.AssignmentToken, DefaultValue.ToBicepSyntax());
     }
 
     private VariableAccessSyntax GetParameterTypeSyntax()
