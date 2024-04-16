@@ -155,12 +155,12 @@ With that said, Achieve aims to support some of the most common resources that a
 until such time as they are natively supported. It doesn't support all resources (see above), but if you have a need for
 them I'm more than happy to accept PRs or look at implementing things myself, just raise an issue.
 
-0.1.0 - Minimal to support the addition of Managed Identities as well as the Custom ID support.
-0.2.0 - Added Bicep generator for the creation of more complex resources. Added Cosmos DB and Role Assignment support.
-0.2.X - More resources (see above). Tidy up/unify the APIs a little.
-0.3.0 - Add a tool to complement `azd` so that the below is not required.
-0.4.0 - Use above tool to also allow full customisation of the generated Bicep templates, down to the Container App Environment.
-X.X.X - ???
+- 0.1.0 - Minimal to support the addition of Managed Identities as well as the Custom ID support.
+- 0.2.0 - Added Bicep generator for the creation of more complex resources. Added Cosmos DB and Role Assignment support.
+- 0.2.X - More resources (see above). Tidy up/unify the APIs a little.
+- 0.3.0 - Add a tool to complement `azd` so that the below is not required.
+- 0.4.0 - Use above tool to also allow full customisation of the generated Bicep templates, down to the Container App Environment.
+- X.X.X - ???
 
 ## Assigning Managed Identity to Projects
 
