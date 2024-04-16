@@ -69,21 +69,21 @@ builder.AddRoleAssignment(kv, id, KeyVaultRoles.SecretsUser);
 - [x] (0.1.0 - current) Microsoft.KeyVault/vaults*
 - [x] (0.1.0 - current) Microsoft.KeyVault/vaults/secrets*
 - [x] (0.1.0 - current) Microsoft.Authorization/roleAssignments
-- [] (0.2.0) Microsoft.Storage/storageAccounts
-- [] (0.2.0) Microsoft.Storage/storageAccounts/blobServices
-- [] (0.2.0) Microsoft.Storage/storageAccounts/blobServices/containers
-- [] (0.2.X) Microsoft.Storage/storageAccounts/queueServices
-- [] (0.2.X) Microsoft.Storage/storageAccounts/queueServices/queues
-- [] (0.2.X) Microsoft.Storage/storageAccounts/tableServices
-- [] (0.2.X) Microsoft.Storage/storageAccounts/tableServices/tables
-- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts (NoSQL only)
-- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases
-- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
-- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments
-- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions
-- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures
-- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers
-- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions
+- [ ] (0.2.0) Microsoft.Storage/storageAccounts
+- [ ] (0.2.0) Microsoft.Storage/storageAccounts/blobServices
+- [ ] (0.2.0) Microsoft.Storage/storageAccounts/blobServices/containers
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/queueServices
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/queueServices/queues
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/tableServices
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/tableServices/tables
+- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts (NoSQL only)
+- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments
+- [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions
+- [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures
+- [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers
+- [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions
 
 * Denotes that support for these resources is implemented via Azure.Provisioning.
 

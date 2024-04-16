@@ -42,3 +42,52 @@ resource test 'Test/test@2023-01-01' = {
   test: 'Value of TestValue property'
 }
 ```
+
+For more advanced property types such as objects and arrays, there are associated methods to assist with the generation
+of something like the following:
+
+```
+resource test 'Test/test@2023-01-01' = {
+  test: 'Value of TestValue property'
+  arr: [
+    'Value 1',
+    'Value 2'
+  ]
+  properties: {
+    something: 'test'
+  }
+}
+```
+
+To support indentation of the resulting Bicep, you need to maintain the "level" at which you're at (below for example 1, 2).
+
+```csharp
+var arrArray = new BicepResourcePropertyArray("arr", 1);
+arrArray.AddValue(new BicepStringValue("Value 1"));
+arrArray.AddValue(new BicepStringValue("Value 2"));
+Body.Add(arrArray);
+
+var propBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 1);
+propBag.AddProperty(new BicepResourceProperty("something", new BicepStringValue("test")));
+Body.Add(propBag);
+```
+
+You can of course nest these:
+
+```csharp
+var propBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 1);
+var newBag = new BicepResourcePropertyBag("new", 2);
+newBag.AddProperty(new BicepResourceProperty("something", new BicepStringValue("test")));
+propBag.AddProperty(newBag);
+Body.Add(propBag);
+```
+
+Which outputs:
+
+```
+properties: {
+  new: {
+    something: 'test'
+  }
+}
+```
