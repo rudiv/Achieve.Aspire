@@ -15,6 +15,7 @@ public class AccountTests(ITestOutputHelper output)
                         name: 'test${uniqueString(resourceGroup().id)}'
                         location: location
                         properties: {
+                          databaseAccountOfferType: 'Standard'
                           backupPolicy: {
                             type: 'Continuous'
                             continuousModeProperties: {
@@ -22,7 +23,9 @@ public class AccountTests(ITestOutputHelper output)
                             }
                           }
                           capabilities: [
-                            'EnableServerless'
+                            {
+                              name: 'EnableServerless'
+                            }
                           ]
                           consistencyPolicy: {
                             defaultConsistencyLevel: 'Session'
@@ -34,8 +37,8 @@ public class AccountTests(ITestOutputHelper output)
                               isZoneRedundant: false
                             }
                           ]
-                          minimumTlsVersion: 'Tls12'
-                          publicNetworkAccess: 'SecuredByPerimiter'
+                          minimalTlsVersion: 'Tls12'
+                          publicNetworkAccess: 'SecuredByPerimeter'
                         }
                       }
                       """;
@@ -53,6 +56,7 @@ public class AccountTests(ITestOutputHelper output)
                        name: 'test${uniqueString(resourceGroup().id)}'
                        location: location
                        properties: {
+                         databaseAccountOfferType: 'Standard'
                          backupPolicy: {
                            type: 'Continuous'
                            continuousModeProperties: {
@@ -60,7 +64,9 @@ public class AccountTests(ITestOutputHelper output)
                            }
                          }
                          capabilities: [
-                           'EnableServerless'
+                           {
+                             name: 'EnableServerless'
+                           }
                          ]
                          consistencyPolicy: {
                            defaultConsistencyLevel: 'Session'
@@ -72,7 +78,7 @@ public class AccountTests(ITestOutputHelper output)
                              isZoneRedundant: false
                            }
                          ]
-                         minimumTlsVersion: 'Tls12'
+                         minimalTlsVersion: 'Tls12'
                          networkAclBypass: 'AzureServices'
                          publicNetworkAccess: 'Enabled'
                        }

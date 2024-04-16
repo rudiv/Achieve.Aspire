@@ -49,11 +49,17 @@ public static class CosmosDbExtensions
         return resourceBuilder.WithManifestPublishingCallback(resource.WriteToManifest);
     }
     
-    public class AzureCosmosDbResource(string name, BicepFileOutput bicepFileOutput) : AchieveResource(name, bicepFileOutput)
+    public class AzureCosmosDbResource(string name, BicepFileOutput bicepFileOutput) : AchieveResource(name, bicepFileOutput), IResourceWithConnectionString
     {
         public const string AccountEndpointOutput = "accountEndpoint";
         
         public BicepOutputReference AccountEndpoint => new(AccountEndpointOutput, this);
+        
+        
+        /// <summary>
+        /// Gets the connection string template for the manifest for the Azure Cosmos DB resource.
+        /// </summary>
+        public ReferenceExpression ConnectionStringExpression => ReferenceExpression.Create($"{AccountEndpoint}");
     }
 }
 

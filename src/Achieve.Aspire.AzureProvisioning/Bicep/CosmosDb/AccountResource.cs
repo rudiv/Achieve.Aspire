@@ -45,7 +45,7 @@ public class CosmosDbAccountResource : BicepResource
 
     public List<BicepValue> NetworkAclBypassResourceIds { get; set; } = [];
     
-    public CosmosDbPublicNetworkAccess PublicNetworkAccess { get; set; } = CosmosDbPublicNetworkAccess.SecuredByPerimiter;
+    public CosmosDbPublicNetworkAccess PublicNetworkAccess { get; set; } = CosmosDbPublicNetworkAccess.SecuredByPerimeter;
 
     public List<CosmosDbVirtualNetworkRule> VirtualNetworkRules { get; set; } = [];
     public List<BicepValue> IpRules { get; set; } = [];
@@ -204,11 +204,10 @@ public class CosmosDbAccountResource : BicepResource
                 .Str(AccountName.ToLowerInvariant())
                 .Exp(new BicepFunctionCallValue("uniqueString", new BicepPropertyAccessValue(new BicepFunctionCallValue("resourceGroup"), "id")))));
         Body.Add(new BicepResourceProperty(BicepResourceProperties.Location, new BicepVariableValue("location")));
+        // not needed Body.Add(new BicepResourceProperty("kind", new BicepStringValue("GlobalDocumentDB")));
         
         var propertyBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 1);
-        // Not needed
-        //propertyBag.AddProperty(new BicepResourceProperty("kind", new BicepStringValue("GlobalDocumentDB")));
-        
+        propertyBag.AddProperty("databaseAccountOfferType", new BicepStringValue("Standard"));
         AddBackupPolicy(propertyBag);
         AddCapabilities(propertyBag);
         AddConsistencyPolicy(propertyBag);
@@ -224,7 +223,7 @@ public class CosmosDbAccountResource : BicepResource
         AddIpRules(propertyBag);
         if (IsVirtualNetworkFilterEnabled) propertyBag.AddProperty("isVirtualNetworkFilterEnabled", new BicepBooleanValue(IsVirtualNetworkFilterEnabled));
         AddLocations(propertyBag);
-        propertyBag.AddProperty("minimumTlsVersion", new BicepStringValue(MinimumTlsVersion.ToString()));
+        propertyBag.AddProperty("minimalTlsVersion", new BicepStringValue(MinimumTlsVersion.ToString()));
         if (NetworkAclBypass != CosmosDbNetworkAclBypass.None)
         {
             propertyBag.AddProperty(propertyNetworkAclBypass, new BicepStringValue(NetworkAclBypass.ToString()));
@@ -286,7 +285,10 @@ public class CosmosDbAccountResource : BicepResource
         var capabilityArray = new BicepResourcePropertyArray(propertyCapabilities, 2);
         foreach(var capability in Capabilities)
         {
-            capabilityArray.AddValue(new BicepStringValue(capability));
+            var capabilityObject = new BicepResourcePropertyBag("cp", 3)
+                .AsValueOnly()
+                .AddProperty("name", new BicepStringValue(capability));
+            capabilityArray.AddValue(capabilityObject);
         }
 
         bag.AddProperty(capabilityArray);
@@ -377,7 +379,7 @@ public enum CosmosDbPublicNetworkAccess
 {
     Disabled,
     Enabled,
-    SecuredByPerimiter
+    SecuredByPerimeter
 }
 
 public enum CosmosDbConsistencyLevel

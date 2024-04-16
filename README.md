@@ -85,30 +85,59 @@ Minimal example below, though you can configure most aspects of the actual Bicep
 ```csharp
 var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc =>
 {
-  acc.AddDatabase("db", db => { }).AddContainer("cn", cn =>
-  {
-    cn.PartitionKey = new CosmosDbSqlContainerPartitionKey("/id");
-  });
+    // During Development, you can either use the emulator (suggest using the Aspire.Hosting.Azure.CosmosDB package), or
+    // provision it in the cloud with development defaults (public access, serverless, etc).  
+    if (builder.ExecutionContext.IsRunMode) {
+        ac.Resource.WithDevelopmentDefaults();
+        ac.WithDevelopmentGlobalAccess(); // Adds your local principal to have access to everything in the account
+    }
+    acc.AddDatabase("db", db => { }).AddContainer("cn", cn =>
+    {
+        cn.PartitionKey = new CosmosDbSqlContainerPartitionKey("/id");
+    });
 });
+```
+
+You can use this without issue with the Aspire Component for Cosmos DB. Just remember you need to wire up the correct
+credential to access the database.
+
+AppHost:
+
+```csharp
+builder.AddProject<Projects.MyProject>("myproject")
+    .WithReference(cosmos);
+```
+
+Project Startup:
+
+```csharp
+builder.AddAzureCosmosDBClient("cosmos",
+    configureSettings: o =>
+    {
+        // If using AZURE_CLIENT_ID, or in local development to use your az cli credential
+        o.Credential = new DefaultAzureCredential();
+        // If using the non-default
+        //o.Credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId = "MYID_CLIENT_ID" });
+    });
 ```
 
 ### Supported Resources
 
-- [x] (0.1.0 - current) Microsoft.ManagedIdentity/userAssignedIdentities*
-- [x] (0.1.0 - current) Microsoft.KeyVault/vaults*
-- [x] (0.1.0 - current) Microsoft.KeyVault/vaults/secrets*
-- [x] (0.1.0 - current) Microsoft.Authorization/roleAssignments
-- [ ] (0.2.0) Microsoft.Storage/storageAccounts
-- [ ] (0.2.0) Microsoft.Storage/storageAccounts/blobServices
-- [ ] (0.2.0) Microsoft.Storage/storageAccounts/blobServices/containers
+- [x] (0.1.0 - live) Microsoft.ManagedIdentity/userAssignedIdentities*
+- [x] (0.1.0 - live) Microsoft.KeyVault/vaults*
+- [x] (0.1.0 - live) Microsoft.KeyVault/vaults/secrets*
+- [x] (0.1.0 - live) Microsoft.Authorization/roleAssignments
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/blobServices
+- [ ] (0.2.X) Microsoft.Storage/storageAccounts/blobServices/containers
 - [ ] (0.2.X) Microsoft.Storage/storageAccounts/queueServices
 - [ ] (0.2.X) Microsoft.Storage/storageAccounts/queueServices/queues
 - [ ] (0.2.X) Microsoft.Storage/storageAccounts/tableServices
 - [ ] (0.2.X) Microsoft.Storage/storageAccounts/tableServices/tables
-- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts (NoSQL only)
-- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases
-- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
-- [ ] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments
+- [x] (0.2.0 - live) Microsoft.DocumentDB/databaseAccounts (NoSQL only)
+- [x] (0.2.0 - live) Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+- [x] (0.2.0 - live) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+- [x] (0.2.0 - live) Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers
