@@ -40,6 +40,16 @@ public class CosmosDbSqlRoleAssignmentResource : BicepResource
         return this;
     }
 
+    public CosmosDbSqlRoleAssignmentResource WithBuiltInRole(CosmosDbSqlBuiltInRole role)
+    {
+        return role switch
+        {
+            CosmosDbSqlBuiltInRole.Reader => WithReaderRole(),
+            CosmosDbSqlBuiltInRole.Contributor => WithContributorRole(),
+            _ => throw new ArgumentOutOfRangeException(nameof(role), "Invalid Built in Role")
+        };
+    }
+
     public CosmosDbSqlRoleAssignmentResource WithReaderRole()
     {
         RoleDefinitionId = GetBaseBuiltInRolePrefix().WithArgument(new BicepStringValue("00000000-0000-0000-0000-000000000001"));
@@ -78,23 +88,12 @@ public class CosmosDbSqlRoleAssignmentResource : BicepResource
 
     private BicepFunctionCallValue GetBaseBuiltInRolePrefix()
     {
-        // /subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.DocumentDB/databaseAccounts/${cosmosDbAccount.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002
         return new BicepFunctionCallValue("resourceId", new BicepStringValue("Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions"), 
             new BicepPropertyAccessValue(GetDatabaseAccountReference(), "name"));
     }
 
     public override void Construct()
     {
-        /*resource rvIdAccess 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-11-15' = {
-             parent: cosmosDbAccount
-             name: guid(cosmosDbAccount.id, 'rvIdAccess')
-             properties: {
-               roleDefinitionId: contributorRole
-               scope: cosmosDbAccount.id
-               principalId: '73f51bfc-7674-4256-8657-38cf695abe56'
-             }
-           }*/
-        
         Body.Add(new BicepResourceProperty("parent", GetDatabaseAccountReference()));
         Body.Add(new BicepResourceProperty("name", new BicepFunctionCallValue("guid", new BicepPropertyAccessValue(GetDatabaseAccountReference(), "id"), new BicepStringValue(Name))));
         var propertyBag = new BicepResourcePropertyBag("properties");
@@ -132,4 +131,10 @@ public class CosmosDbSqlRoleAssignmentResource : BicepResource
         propertyBag.AddProperty("principalId", PrincipalId);
         Body.Add(propertyBag);
     }
+}
+
+public enum CosmosDbSqlBuiltInRole
+{
+    Reader,
+    Contributor
 }

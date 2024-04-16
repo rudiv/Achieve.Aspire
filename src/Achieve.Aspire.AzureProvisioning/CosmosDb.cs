@@ -27,6 +27,14 @@ public static class CosmosDbExtensions
         {
             fileOutput.AddParameter(new BicepParameter(AzureBicepResource.KnownParameters.PrincipalId, BicepSupportedType.String));
         }
+
+        if (options.Principals.Count > 0)
+        {
+            foreach(var (paramName, bicepOutputReference) in options.Principals)
+            {
+                fileOutput.AddParameter(new BicepParameter(paramName, BicepSupportedType.String));
+            }
+        }
         
         fileOutput.AddResource(accountResource);
         foreach (var database in options.Databases)
@@ -38,6 +46,14 @@ public static class CosmosDbExtensions
             }
         }
         
+        if (options.RoleAssignments.Count > 0)
+        {
+            foreach (var roleAssignment in options.RoleAssignments)
+            {
+                fileOutput.AddResource(roleAssignment);
+            }
+        }
+        
         fileOutput.AddOutput(new BicepOutput(AzureCosmosDbResource.AccountEndpointOutput, BicepSupportedType.String, accountResource.Name + ".properties.documentEndpoint"));
 
         var resource = new AzureCosmosDbResource(name, fileOutput);
@@ -45,6 +61,13 @@ public static class CosmosDbExtensions
         if (options.EnablePassPrincipalId)
         {
             resourceBuilder.WithParameter(AzureBicepResource.KnownParameters.PrincipalId);
+        }
+        if (options.Principals.Count > 0)
+        {
+            foreach(var (paramName, bicepOutputReference) in options.Principals)
+            {
+                resourceBuilder.WithParameter(paramName, bicepOutputReference);
+            }
         }
         return resourceBuilder.WithManifestPublishingCallback(resource.WriteToManifest);
     }
@@ -72,10 +95,12 @@ public class CosmosDbAccountOptions(CosmosDbAccountResource resource)
     
     public bool EnablePassPrincipalId { get; set; }
 
-    public CosmosDbDatabaseOptions AddDatabase(string name, Action<CosmosDbSqlDatabaseResource> configure)
+    public List<(string, BicepOutputReference)> Principals { get; set; } = [];
+
+    public CosmosDbDatabaseOptions AddDatabase(string name, Action<CosmosDbSqlDatabaseResource>? configure = null)
     {
         var database = new CosmosDbSqlDatabaseResource(Resource, name);
-        configure(database);
+        configure?.Invoke(database);
         Databases.Add(name, new CosmosDbDatabaseOptions(this, database));
         return Databases[name];
     }
@@ -89,6 +114,31 @@ public class CosmosDbAccountOptions(CosmosDbAccountResource resource)
             .WithContributorRole());
         return this;
     }
+    
+    /// <summary>
+    /// Add a Role Assignment to the Cosmos DB Account.
+    /// </summary>
+    /// <param name="scope">Must be a <see cref="CosmosDbAccountResource" />, <see cref="CosmosDbSqlDatabaseResource"/> or <see cref="CosmosDbSqlContainerResource"/>.</param>
+    /// <param name="output">Bicep Output Reference. Must be a Principal ID.</param>
+    /// <param name="role">Built in role (currently) to assign.</param>
+    /// <returns></returns>
+    public CosmosDbAccountOptions WithRoleAssignment(BicepResource scope, BicepOutputReference output, CosmosDbSqlBuiltInRole role)
+    {
+        var paramName = output.Resource.Name + "Principal";
+        if (Principals.All(p => p.Item1 != paramName))
+        {
+            Principals.Add((paramName, output));
+        }
+        var roleAssignment = new CosmosDbSqlRoleAssignmentResource(output.Resource.Name + "Ra_" + Helpers.StableIdentifier(output.Resource.Name + scope.Name + role));
+        // Can't use WithScope as typed
+        roleAssignment.Scope = scope;
+        roleAssignment.WithBuiltInRole(role).PrincipalId = new BicepVariableValue(paramName);
+        RoleAssignments.Add(roleAssignment);
+        return this;
+    }
+
+    public CosmosDbAccountOptions WithRoleAssignment(BicepResource scope, IResourceBuilder<AzureManagedIdentityResource> identity, CosmosDbSqlBuiltInRole role) =>
+        WithRoleAssignment(scope, identity.GetOutput("PrincipalId"), role);
 }
 
 public class CosmosDbDatabaseOptions(CosmosDbAccountOptions parent, CosmosDbSqlDatabaseResource sqlDatabase)
@@ -96,10 +146,10 @@ public class CosmosDbDatabaseOptions(CosmosDbAccountOptions parent, CosmosDbSqlD
     public CosmosDbSqlDatabaseResource Resource { get; set; } = sqlDatabase;
     public Dictionary<string, CosmosDbSqlContainerResource> Containers { get; set; } = [];
     
-    public CosmosDbSqlContainerResource AddContainer(string name, Action<CosmosDbSqlContainerResource> configure)
+    public CosmosDbSqlContainerResource AddContainer(string name, Action<CosmosDbSqlContainerResource>? configure = null)
     {
         var container = new CosmosDbSqlContainerResource(Resource, name);
-        configure(container);
+        configure?.Invoke(container);
         Containers.Add(name, container);
         return container;
     }

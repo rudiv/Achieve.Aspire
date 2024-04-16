@@ -91,10 +91,18 @@ var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc =>
         ac.Resource.WithDevelopmentDefaults();
         ac.WithDevelopmentGlobalAccess(); // Adds your local principal to have access to everything in the account
     }
-    acc.AddDatabase("db", db => { }).AddContainer("cn", cn =>
+    var db = acc.AddDatabase("db");
+    var cn = db.AddContainer("cn", cn =>
     {
         cn.PartitionKey = new CosmosDbSqlContainerPartitionKey("/id");
     });
+    
+    if (builder.ExecutionContext.IsPublishMode) {
+        // Add a Managed Identity to the Cosmos DB
+        ac.AddRoleAssignment(acc.Resource, id, CosmosDbSqlBuiltInRoles.Contributor);
+        //ac.AddRoleAssignment(db.Resource, id, CosmosDbSqlBuiltInRoles.Contributor); // Or the Database
+        //ac.AddRoleAssignment(cn, id, CosmosDbSqlBuiltInRoles.Contributor); // Or the Container
+    }
 });
 ```
 
@@ -157,6 +165,7 @@ them I'm more than happy to accept PRs or look at implementing things myself, ju
 
 - 0.1.0 - Minimal to support the addition of Managed Identities as well as the Custom ID support.
 - 0.2.0 - Added Bicep generator for the creation of more complex resources. Added Cosmos DB and Role Assignment support.
+- 0.2.1 - Adds convenience methods for Role Assignments
 - 0.2.X - More resources (see above). Tidy up/unify the APIs a little.
 - 0.3.0 - Add a tool to complement `azd` so that the below is not required.
 - 0.4.0 - Use above tool to also allow full customisation of the generated Bicep templates, down to the Container App Environment.
