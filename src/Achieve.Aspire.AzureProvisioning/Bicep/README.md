@@ -43,6 +43,18 @@ resource test 'Test/test@2023-01-01' = {
 }
 ```
 
+Validation is as simple as overriding the validation method and throwing an exception when invalid.
+
+```csharp
+protected override void ValidateResourceType()
+{
+    if (MyProp == null)
+    {
+        throw new InvalidOperationException("Oops, you need to set MyProp!");
+    }
+}
+```
+
 For more advanced property types such as objects and arrays, there are associated methods to assist with the generation
 of something like the following:
 
@@ -59,7 +71,8 @@ resource test 'Test/test@2023-01-01' = {
 }
 ```
 
-To support indentation of the resulting Bicep, you need to maintain the "level" at which you're at (below for example 1, 2).
+To support indentation of the resulting Bicep, you need to maintain the "level" at which you're at (2nd example below has
+levels 1 and 2).
 
 ```csharp
 var arrArray = new BicepResourcePropertyArray("arr", 1);
@@ -68,7 +81,7 @@ arrArray.AddValue(new BicepStringValue("Value 2"));
 Body.Add(arrArray);
 
 var propBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 1);
-propBag.AddProperty(new BicepResourceProperty("something", new BicepStringValue("test")));
+propBag.AddProperty("something", new BicepStringValue("test"));
 Body.Add(propBag);
 ```
 
@@ -77,7 +90,7 @@ You can of course nest these:
 ```csharp
 var propBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 1);
 var newBag = new BicepResourcePropertyBag("new", 2);
-newBag.AddProperty(new BicepResourceProperty("something", new BicepStringValue("test")));
+newBag.AddProperty("something", new BicepStringValue("test"));
 propBag.AddProperty(newBag);
 Body.Add(propBag);
 ```
@@ -90,4 +103,25 @@ properties: {
     something: 'test'
   }
 }
+```
+
+A Property Bag can also output without the prefix (a kindof abuse, it should be a new type, but for now...) for example
+when adding it to an array.
+
+```csharp
+var array = new BicepResourcePropertyArray("arr", 1);
+var valueOnlyBag = new BicepResourcePropertyBag("x", 2)
+    .AsValueOnly()
+    .AddProperty("something", new BicepStringValue("test"));
+array.AddValue(valueOnlyBag);
+```
+
+Which outputs:
+
+```
+arr: [
+  {
+    something: 'test'
+  }
+]
 ```
