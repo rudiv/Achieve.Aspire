@@ -3,7 +3,7 @@ using Achieve.Aspire.AzureProvisioning.Bicep.Internal;
 using Achieve.Aspire.AzureProvisioning.Resources;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
-using Azure.Provisioning.Authorization;
+using Aspire.Hosting.Azure;
 
 namespace Achieve.Aspire.AzureProvisioning;
 
@@ -16,40 +16,83 @@ public static class CosmosDbExtensions
     /// <param name="name"></param>
     /// <param name="configure"></param>
     /// <returns></returns>
-    public static IResourceBuilder<AzureCosmosDbResource>? AddAzureCosmosDbNoSqlAccount(this IDistributedApplicationBuilder builder, string name, Action<CosmosDbOptions> configure)
+    public static IResourceBuilder<AzureCosmosDbResource> AddAzureCosmosDbNoSqlAccount(this IDistributedApplicationBuilder builder, string name, Action<CosmosDbAccountOptions> configure)
     {
         var accountResource = new CosmosDbAccountResource(name);
-        var options = new CosmosDbOptions();
+        var options = new CosmosDbAccountOptions(accountResource);
         configure(options);
+
+        var fileOutput = BicepFileOutput.GetAspireFileOutput();
+        if (options.EnablePassPrincipalId)
+        {
+            fileOutput.AddParameter(new BicepParameter(AzureBicepResource.KnownParameters.PrincipalId, BicepSupportedType.String));
+        }
         
-        return builder.AddResource(new AzureCosmosDbResource(name, null));
+        fileOutput.AddResource(accountResource);
+        foreach (var database in options.Databases)
+        {
+            fileOutput.AddResource(database.Value.Resource);
+            foreach (var container in database.Value.Containers)
+            {
+                fileOutput.AddResource(container.Value);
+            }
+        }
+        
+        fileOutput.AddOutput(new BicepOutput(AzureCosmosDbResource.AccountEndpointOutput, BicepSupportedType.String, accountResource.Name + ".properties.documentEndpoint"));
+
+        var resource = new AzureCosmosDbResource(name, fileOutput);
+        var resourceBuilder = builder.AddResource(resource);
+        if (options.EnablePassPrincipalId)
+        {
+            resourceBuilder.WithParameter(AzureBicepResource.KnownParameters.PrincipalId);
+        }
+        return resourceBuilder.WithManifestPublishingCallback(resource.WriteToManifest);
     }
     
     public class AzureCosmosDbResource(string name, BicepFileOutput bicepFileOutput) : AchieveResource(name, bicepFileOutput)
     {
+        public const string AccountEndpointOutput = "accountEndpoint";
+        
+        public BicepOutputReference AccountEndpoint => new(AccountEndpointOutput, this);
     }
 }
 
-public class CosmosDbOptions {
-    public CosmosDbAccountResource DbAccount { get; set; }
-    public Dictionary<string, CosmosDbDatabaseOptions> Databases { get; set; } = new();
+public class CosmosDbAccountOptions(CosmosDbAccountResource resource)
+{
+    public CosmosDbAccountResource Resource { get; set; } = resource;
+    public Dictionary<string, CosmosDbDatabaseOptions> Databases { get; set; } = [];
+    
+    public List<CosmosDbSqlRoleAssignmentResource> RoleAssignments { get; set; } = [];
+    
+    public bool EnablePassPrincipalId { get; set; }
 
-    public CosmosDbDatabaseOptions AddDatabase(string name, Action<CosmosDbDatabaseResource> configure)
+    public CosmosDbDatabaseOptions AddDatabase(string name, Action<CosmosDbSqlDatabaseResource> configure)
     {
-        var database = new CosmosDbDatabaseResource(name);
+        var database = new CosmosDbSqlDatabaseResource(Resource, name);
         configure(database);
         Databases.Add(name, new CosmosDbDatabaseOptions(this, database));
         return Databases[name];
     }
+
+    public CosmosDbAccountOptions WithDevelopmentGlobalAccess()
+    {
+        EnablePassPrincipalId = true;
+        RoleAssignments.Add(new CosmosDbSqlRoleAssignmentResource("developmentAccess")
+            .WithScope(Resource)
+            .WithDefaultPrincipalId()
+            .WithContributorRole());
+        return this;
+    }
 }
 
-public class CosmosDbDatabaseOptions(CosmosDbOptions parent, CosmosDbDatabaseResource database)
+public class CosmosDbDatabaseOptions(CosmosDbAccountOptions parent, CosmosDbSqlDatabaseResource sqlDatabase)
 {
-    public Dictionary<string, CosmosDbContainerResource> Containers { get; set; } = new();
+    public CosmosDbSqlDatabaseResource Resource { get; set; } = sqlDatabase;
+    public Dictionary<string, CosmosDbSqlContainerResource> Containers { get; set; } = [];
     
-    public CosmosDbContainerResource AddContainer(string name, Action<CosmosDbContainerResource> configure)
+    public CosmosDbSqlContainerResource AddContainer(string name, Action<CosmosDbSqlContainerResource> configure)
     {
-        var container = new CosmosDbContainerResource(name);
+        var container = new CosmosDbSqlContainerResource(Resource, name);
         configure(container);
         Containers.Add(name, container);
         return container;

@@ -69,7 +69,15 @@ public class BicepVariableValue(string variable) : BicepValue
 
 public class BicepFunctionCallValue(string function, params BicepValue[] arguments) : BicepValue
 {
-    public override SyntaxBase ToBicepSyntax() => SyntaxFactory.CreateFunctionCall(function, arguments.Select(a => a.ToBicepSyntax()).ToArray());
+    private List<BicepValue> Arguments { get; } = new(arguments);
+    
+    public BicepFunctionCallValue WithArgument(BicepValue argument)
+    {
+        Arguments.Add(argument);
+        return this;
+    }
+    
+    public override SyntaxBase ToBicepSyntax() => SyntaxFactory.CreateFunctionCall(function, Arguments.Select(a => a.ToBicepSyntax()).ToArray());
 }
 
 public class BicepPropertyAccessValue(BicepValue baseValue, string value) : BicepValue

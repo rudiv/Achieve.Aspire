@@ -20,18 +20,31 @@ manually create Bicep. You can also create your own Resources for ones that aren
 standardised manner. See the [Bicep Generators](https://github.com/rudiv/Achieve.Aspire/tree/main/src/Achieve.Aspire.AzureProvisioning/Bicep) 
 for more information and examples on how to do this.
 
+**Achieve should not have to exist.** It exists because of gaps in the Aspire stack that are not yet filled, and I hope
+that with time, Achieve will become redundant as Aspire matures.
+
 ## Why is Achieve needed?
 
 To achieve (pun intended) real-world scenarios when using .NET Aspire (for now and at least GA release), you need to run
 `azd infra synth` and manually edit the generated Bicep and YAML. The long term goal of Aspire is to allow for more
 configuration within the AppHost, but right now that's simply not supported.
 
+There's a discussion I raised [on the azd repository](https://github.com/Azure/azure-dev/discussions/3184) with a lot more detail, where
+David Fowler repeatedly points out that `azd infra synth` should be a "last resort". Unfortunately in its current state, it's the only
+way to get resources that are deployable to the real-world for production purposes. On the Managed Identity front, there's a
+[pull request on Aspire](https://github.com/dotnet/aspire/pull/3339) that adds some basic functionality (but is sat rejected as
+there are already future ideas in this space).
+
 The primary issues that Achieve aims to solve are:
 
 - The single identity / principal assigned to all projects by default
 - The lack of finely grained control around Role Assignments in Azure
 - Missing Resources in Aspire.Hosting.Azure.* (Azure.Provisioning) that are needed for real-world applications
-- Full descriptions of resources that aren't possible to describe in Aspire.Hosting.Azure.*
+- Full descriptions of resources that aren't possible using Aspire.Hosting.Azure.*
+
+An example of the last point would be Cosmos DB. Aspire.Hosting.Azure.CosmosDB only allows you to set the account up with
+databases, but not configure the Containers within it nor access to the data plane. I can only assume they expect people
+to use the Control Plane via SDK, which is a terrible idea as these are deployment related resources. 
 
 ## How to use it
 
@@ -61,6 +74,22 @@ builder.AddProject<Projects.MyProject>("myproject")
 
 // You can also add Role Assignments to resources manually (currently only KV supported)
 builder.AddRoleAssignment(kv, id, KeyVaultRoles.SecretsUser);
+```
+
+#### Creating a Cosmos DB Resource
+
+With Achieve, you can describe your Cosmos DB resources in full, including the databases, containers, and access to them.
+
+Minimal example below, though you can configure most aspects of the actual Bicep resource.
+
+```csharp
+var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc =>
+{
+  acc.AddDatabase("db", db => { }).AddContainer("cn", cn =>
+  {
+    cn.PartitionKey = new CosmosDbSqlContainerPartitionKey("/id");
+  });
+});
 ```
 
 ### Supported Resources

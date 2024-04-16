@@ -24,6 +24,5 @@ public class UserAssignedIdentityResource : BicepResource
                         .Exp(new BicepFunctionCallValue("uniqueString", new BicepPropertyAccessValue(new BicepFunctionCallValue("resourceGroup"), "id")))),
                     new BicepIntValue(24))));
         Body.Add(new BicepResourceProperty(BicepResourceProperties.Location, new BicepVariableValue("location")));
-        
     }
 }

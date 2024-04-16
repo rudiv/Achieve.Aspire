@@ -2,14 +2,9 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;
   &lt;Assembly Path="/Users/rudi/.nuget/packages/azure.provisioning.keyvault/0.1.0-beta.1/lib/netstandard2.0/Azure.Provisioning.KeyVault.dll" /&gt;
 &lt;/AssemblyExplorer&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8f063988_002D5874_002D455c_002D8e8b_002Dad9978e141a6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ResourceGeneratesCorrectHeader" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::6BB73DF6-CBD9-4B8E-8717-73ACA5FE9A44::net8.0::Achieve.Aspire.AzureProvisioning.Tests.Bicep.BasicGeneratorTests.ResourceGeneratesCorrectHeader&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::6BB73DF6-CBD9-4B8E-8717-73ACA5FE9A44::net8.0::Achieve.Aspire.AzureProvisioning.Tests.Bicep.BasicGeneratorTests.ValueGenerationCorrect&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::6BB73DF6-CBD9-4B8E-8717-73ACA5FE9A44::net8.0::Achieve.Aspire.AzureProvisioning.Tests.Bicep.ResourceGeneratorTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::6BB73DF6-CBD9-4B8E-8717-73ACA5FE9A44::net8.0::Achieve.Aspire.AzureProvisioning.Tests.RoleAssignmentTests.RoleAssignmentGeneratesCorrectly&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::6BB73DF6-CBD9-4B8E-8717-73ACA5FE9A44::net8.0::Achieve.Aspire.AzureProvisioning.Tests.Bicep.Cosmos.AccountTests.CreateDefaultAccount&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/Users/rudi/Library/Caches/JetBrains/Rider2024.1/resharper-host/temp/Rider/vAny/CoverageData/_Achieve.Aspire.-201606746/Snapshot/snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8f063988_002D5874_002D455c_002D8e8b_002Dad9978e141a6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ResourceGeneratesCorrectHeader" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b5be586d_002Dd334_002D4bb7_002D8da4_002D0a4a9f3acd1a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestManagedIdentityAddition" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;

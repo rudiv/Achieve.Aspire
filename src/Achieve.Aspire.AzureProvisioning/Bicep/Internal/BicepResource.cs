@@ -1,5 +1,6 @@
 using Bicep.Core.Parsing;
 using Bicep.Core.Syntax;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Achieve.Aspire.AzureProvisioning.Bicep.Internal;
 
@@ -7,7 +8,23 @@ public abstract class BicepResource(string type) : IBicepSyntaxGenerator
 {
     private const string ExistingToken = "existing";
 
-    public string Name { get; set; } = string.Empty;
+    private string name;
+    public string Name
+    {
+        get => name;
+        set => name = ValidateResourceName(value);
+    }
+
+    private string ValidateResourceName(string name)
+    {
+        if (name.Any(m => !char.IsLetterOrDigit(m) && m != '_'))
+        {
+            throw new ArgumentException("Resource name must be alphanumeric with underscores only.");
+        }
+
+        return name;
+    }
+
     public string Type { get; set; } = type;
     public bool Existing { get; set; } = false;
 
@@ -21,6 +38,7 @@ public abstract class BicepResource(string type) : IBicepSyntaxGenerator
     
     public SyntaxBase ToBicepSyntax()
     {
+        Body.Clear();
         ValidateResourceType();
         Construct();
         
@@ -75,7 +93,15 @@ public class BicepResourceProperty(string name, BicepValue bicepValue) : IBicepR
 public class BicepResourcePropertyBag(string name, int level = 1) : IBicepResourceProperty
 {
     private List<IBicepResourceProperty> Properties { get; } = new();
+    
+    private bool IsRawObject { get; set; } = false;
 
+    public BicepResourcePropertyBag AsValueOnly()
+    {
+        IsRawObject = true;
+        return this;
+    }
+    
     public BicepResourcePropertyBag AddProperty(IBicepResourceProperty property)
     {
         Properties.Add(property);
@@ -87,16 +113,26 @@ public class BicepResourcePropertyBag(string name, int level = 1) : IBicepResour
         Properties.Add(new BicepResourceProperty(name, value));
         return this;
     }
-    
-    public SyntaxBase ToBicepSyntax() => SyntaxFactory.CreateObjectProperty(name,
-        BicepResource.CreateIndentedObject(Properties.Select(p => (ObjectPropertySyntax)p.ToBicepSyntax()), 2 + (level * 2)));
+
+    public SyntaxBase ToBicepSyntax()
+    {
+        var rawObject = BicepResource.CreateIndentedObject(Properties.Select(p => (ObjectPropertySyntax)p.ToBicepSyntax()), 2 + (level * 2));
+        if (IsRawObject)
+        {
+            return rawObject;
+        }
+        else
+        {
+            return SyntaxFactory.CreateObjectProperty(name, rawObject);
+        }
+    }
 }
 
 public class BicepResourcePropertyArray(string name, int level = 1) : IBicepResourceProperty
 {
-    private List<BicepValue> Values { get; } = new();
+    private List<IBicepSyntaxGenerator> Values { get; } = new();
     
-    public BicepResourcePropertyArray AddValue(BicepValue value)
+    public BicepResourcePropertyArray AddValue(IBicepSyntaxGenerator value)
     {
         Values.Add(value);
         return this;
