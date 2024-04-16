@@ -25,15 +25,16 @@ public class CosmosDbTests(ITestOutputHelper output)
           });
         });
 
-        var identityManifestBicep = await ManifestUtils.GetManifestWithBicep(cosmos.Resource);
+        var cosmosManifestBicep = await ManifestUtils.GetManifestWithBicep(cosmos.Resource);
         
         var expectedManifest = """
                                {
                                  "type": "azure.bicep.v0",
+                                 "connectionString": "{cosmos.outputs.accountEndpoint}",
                                  "path": "cosmos.achieve.bicep"
                                }
                                """;
-        Assert.Equal(expectedManifest, identityManifestBicep.ManifestNode.ToString());
+        Assert.Equal(expectedManifest, cosmosManifestBicep.ManifestNode.ToString());
         
         var expectedBicep = """
                             targetScope = 'resourceGroup'
@@ -103,6 +104,6 @@ public class CosmosDbTests(ITestOutputHelper output)
                             output accountEndpoint string = cosmosDbAccount.properties.documentEndpoint
                             
                             """;
-        Assert.Equal(expectedBicep, identityManifestBicep.BicepText);
+        Assert.Equal(expectedBicep, cosmosManifestBicep.BicepText);
     }
 }

@@ -9,9 +9,9 @@
         <PackageId>Achieve.Aspire.AzureProvisioning</PackageId>
         <RepositoryUrl>https://github.com/rudiv/Achieve.Aspire</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>assets/aspire-achieve.png</PackageIcon>
+        <PackageIcon>aspire-achieve.png</PackageIcon>
         <PackageTags>aspire hosting azure provisioning keyvault managedidentity achieve</PackageTags>
-        <Description>Adds support for more secure Aspire provisioning.</Description>
+        <Description>Adds support for more full-featured (and secure) Azure provisioning within for Aspire.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
         <MinVerDefaultPreReleaseIdentifiers>preview.5</MinVerDefaultPreReleaseIdentifiers>
@@ -29,7 +29,7 @@
       <Content Include="..\..\README.md" Pack="true" PackagePath="\">
         <Link>README.md</Link>
       </Content>
-      <Content Include="..\..\assets\aspire-achieve.png" Pack="true" PackagePath="assets\">
+      <Content Include="..\..\assets\aspire-achieve.png" Pack="true" PackagePath="\">
         <Link>assets\aspire-achieve.png</Link>
       </Content>
     </ItemGroup>
