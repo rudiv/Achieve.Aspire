@@ -145,6 +145,23 @@ builder.AddAzureCosmosDBClient("cosmos",
 
 * Denotes that support for these resources is implemented via Azure.Provisioning.
 
+## Current State / Version
+
+This project is brand new, but supports something that both I and my team have needed for a long time. I'd hoped to get
+certain parts of this in to Aspire directly as that's what makes sense, but they have their own plans to deliver similar
+functionality after GA.
+
+With that said, Achieve aims to support some of the most common resources that are required and polyfill them in to Aspire
+until such time as they are natively supported. It doesn't support all resources (see above), but if you have a need for
+them I'm more than happy to accept PRs or look at implementing things myself, just raise an issue.
+
+0.1.0 - Minimal to support the addition of Managed Identities as well as the Custom ID support.
+0.2.0 - Added Bicep generator for the creation of more complex resources. Added Cosmos DB and Role Assignment support.
+0.2.X - More resources (see above).
+0.3.0 - Add a tool to complement `azd` so that the below is not required.
+0.4.0 - Use above tool to also allow full customisation of the generated Bicep templates, down to the Container App Environment.
+X.X.X - ???
+
 ## Assigning Managed Identity to Projects
 
 As above, you can call `.WithManagedIdentity("MYID", id);` after your `AddProject`, which will generate custom metadata
