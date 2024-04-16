@@ -15,6 +15,11 @@ Aspire is an opinionated, cloud ready stack for building observable, production 
 Achieve augments Aspire at deployment time by adding replacements for the built in Aspire.Hosting.Azure.* packages that
 allow for more real-world scenarios on proper applications that need to run on Azure.
 
+It allows you to define Resources fully from C#, without having to use `azd infra synth` on your Aspire projects or
+manually create Bicep. You can also create your own Resources for ones that aren't directly supported by Achieve in a
+standardised manner. See the [Bicep Generators](https://github.com/rudiv/Achieve.Aspire/tree/main/src/Achieve.Aspire.AzureProvisioning/Bicep) 
+for more information and examples on how to do this.
+
 ## Why is Achieve needed?
 
 To achieve (pun intended) real-world scenarios when using .NET Aspire (for now and at least GA release), you need to run
@@ -25,13 +30,20 @@ The primary issues that Achieve aims to solve are:
 
 - The single identity / principal assigned to all projects by default
 - The lack of finely grained control around Role Assignments in Azure
-- Missing built-in Aspire Resources to configure Identities
+- Missing Resources in Aspire.Hosting.Azure.* (Azure.Provisioning) that are needed for real-world applications
+- Full descriptions of resources that aren't possible to describe in Aspire.Hosting.Azure.*
 
 ## How to use it
 
 Add it! `Achieve.Aspire.AzureProvisioning` on NuGet.
 
-### Create your actual identities & resources
+Achieve adds new methods to describe resources, along with specific configuration options that allow you to describe
+resources more cleanly than manually setting properties within Azure.Provisioning.
+
+An example of this is the Key Vault builder below, where we can add a Managed Identity simply by referencing it and the
+role.
+
+### Create your Achieve Resources
 
 ```csharp
 // NOTE - Don't use hyphens in this, it will partially break Bicep generation despite "Name must contain only ASCII letters, digits, and hyphens."
@@ -50,6 +62,37 @@ builder.AddProject<Projects.MyProject>("myproject")
 // You can also add Role Assignments to resources manually (currently only KV supported)
 builder.AddRoleAssignment(kv, id, KeyVaultRoles.SecretsUser);
 ```
+
+### Supported Resources
+
+- [x] (0.1.0 - current) Microsoft.ManagedIdentity/userAssignedIdentities*
+- [x] (0.1.0 - current) Microsoft.KeyVault/vaults*
+- [x] (0.1.0 - current) Microsoft.KeyVault/vaults/secrets*
+- [x] (0.1.0 - current) Microsoft.Authorization/roleAssignments
+- [] (0.2.0) Microsoft.Storage/storageAccounts
+- [] (0.2.0) Microsoft.Storage/storageAccounts/blobServices
+- [] (0.2.0) Microsoft.Storage/storageAccounts/blobServices/containers
+- [] (0.2.X) Microsoft.Storage/storageAccounts/queueServices
+- [] (0.2.X) Microsoft.Storage/storageAccounts/queueServices/queues
+- [] (0.2.X) Microsoft.Storage/storageAccounts/tableServices
+- [] (0.2.X) Microsoft.Storage/storageAccounts/tableServices/tables
+- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts (NoSQL only)
+- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+- [] (0.2.0) Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments
+- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions
+- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures
+- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers
+- [] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions
+
+* Denotes that support for these resources is implemented via Azure.Provisioning.
+
+## Assigning Managed Identity to Projects
+
+As above, you can call `.WithManagedIdentity("MYID", id);` after your `AddProject`, which will generate custom metadata
+within the Aspire manifest. This metadata can be used to assign the managed identity to the project inside the generated
+templates, but it requires a custom build of azd to do that (below). Alternatively, you can manually edit the generated
+yaml templates, though this requires you falling back down to `azd infra synth`.
 
 ### (If comfortable using custom azd) Build custom azd
 
@@ -106,22 +149,15 @@ You can do this automatically by changing the `.WithManagedIdentity("MYID", id)`
 **Important** Even when using the custom `azd` as above, this won't remove the default assignment. You'll still need to
 do that manually.
 
-## What's supported
+## Usage at Development Time
 
-Very little, here's a list of stuff I want and will be here very soon.
+Local Development against most of the resources that Achieve will support is only partially possible, as we're describing
+publish-time only security definitions for the most part.
 
-- [x] (0.1.0) Managed Identities
-- [x] (0.1.0) Key Vault Managed Identity
-- [x] (0.1.0) Key Vault Secrets (from other Bicep variables)
-- [x] (0.1.0) Add Managed Identity to Project
-- [ ] Storage Managed Identity
-- [ ] CosmosDB Full-Fidelity
-- [ ] CosmosDB Managed Identity w/ SQL Roles
+At development time, it may be best to use the Aspire provided resources to just configure them in full-trust for your
+development account, using Achieve provided resources at Publish time.
 
-Note that very much what isn't supported right now is local dev against these resources. The resources created here will
-only work at publishing type.
-
-Wrap these resources in publish mode like this:
+You can do this as follows:
 ```csharp
 IResourceBuilder<AzureKeyVaultResource> kv;
 if (builder.ExecutionContext.IsPublishMode)
