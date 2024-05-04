@@ -5,9 +5,11 @@ using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Azure;
 using Aspire.Hosting.Publishing;
-using Azure.Provisioning.ManagedServiceIdentities;
+using Azure.Provisioning;
 
 namespace Achieve.Aspire.AzureProvisioning;
+
+#pragma warning disable AZPROVISION001
 
 public static class ManagedIdentityExtensions
 {

@@ -5,9 +5,11 @@ using Achieve.Aspire.AzureProvisioning.Resources;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Azure;
-using Azure.Provisioning.Authorization;
+using Azure.Provisioning;
 
 namespace Achieve.Aspire.AzureProvisioning;
+
+#pragma warning disable AZPROVISION001
 
 public static class RoleAssignmentExtensions
 {

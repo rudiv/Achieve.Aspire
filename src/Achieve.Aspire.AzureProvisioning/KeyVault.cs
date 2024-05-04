@@ -1,11 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Azure;
-using Azure.Provisioning.Authorization;
+using Azure.Provisioning;
 using Azure.Provisioning.KeyVaults;
 using Azure.ResourceManager.Authorization.Models;
 
 namespace Achieve.Aspire.AzureProvisioning;
+
+#pragma warning disable AZPROVISION001
 
 public static class KeyVaultExtensions
 {

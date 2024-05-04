@@ -35,10 +35,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Aspire.Hosting.Azure" Version="8.0.0-preview.5.24201.12" />
-      <PackageReference Include="Aspire.Hosting.Azure.KeyVault" Version="8.0.0-preview.5.24201.12" />
+      <PackageReference Include="Aspire.Hosting.Azure" Version="8.0.0-preview.6.24214.1" />
+      <PackageReference Include="Aspire.Hosting.Azure.KeyVault" Version="8.0.0-preview.6.24214.1" />
       <PackageReference Include="Azure.Bicep.Core" Version="0.26.170" />
-      <PackageReference Include="Azure.Provisioning" Version="0.1.0-beta.2" />
+      <PackageReference Include="Azure.Provisioning" Version="0.2.0" />
+      <PackageReference Include="Azure.Provisioning.KeyVault" Version="0.1.0" />
+      <PackageReference Include="Azure.Provisioning.Resources" Version="0.1.0" />
       <PackageReference Include="MinVer" Version="5.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
