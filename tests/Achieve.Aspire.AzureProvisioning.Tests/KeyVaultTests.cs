@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Achieve.Aspire.AzureProvisioning.Tests.Utils;
 using Aspire.Hosting;
+using Aspire.Hosting.Azure;
 using Azure.ResourceManager.Models;
 using Bicep.Core.Diagnostics;
 using Bicep.Core.Parsing;
@@ -11,6 +12,14 @@ namespace Achieve.Aspire.AzureProvisioning.Tests;
 
 public class KeyVaultTests(ITestOutputHelper output)
 {
+    [Fact]
+    public void AzureProvisionerIsAdded()
+    {
+        using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
+        var kv = builder.AddZtAzureKeyVault("kv", _ => { });
+        Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
+    }
+    
     [Fact]
     public async Task ZeroTrustKeyVaultCanHaveManagedIdentityAndSecrets()
     {

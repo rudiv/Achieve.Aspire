@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Achieve.Aspire.AzureProvisioning.Tests.Utils;
 using Aspire.Hosting;
+using Aspire.Hosting.Azure;
 using Azure.ResourceManager.Models;
 using Xunit.Abstractions;
 
@@ -8,6 +9,16 @@ namespace Achieve.Aspire.AzureProvisioning.Tests;
 
 public class RoleAssignmentTests(ITestOutputHelper output)
 {
+    [Fact]
+    public void AzureProvisionerIsAdded()
+    {
+      using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
+      var id = builder.AddManagedIdentity("testid");
+      var kv = builder.AddZtAzureKeyVault("kv", o => { });
+      var ra = builder.AddAzureRoleAssignment(kv, id, KeyVaultRoles.CertificateUser);
+      Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
+    }
+  
     [Fact]
     public async Task RoleAssignmentGeneratesCorrectly()
     {

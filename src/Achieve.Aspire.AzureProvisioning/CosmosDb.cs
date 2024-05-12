@@ -18,6 +18,8 @@ public static class CosmosDbExtensions
     /// <returns></returns>
     public static IResourceBuilder<AzureCosmosDbResource> AddAzureCosmosDbNoSqlAccount(this IDistributedApplicationBuilder builder, string name, Action<CosmosDbAccountOptions> configure)
     {
+        builder.AddAzureProvisioning();
+        
         var accountResource = new CosmosDbAccountResource(name);
         var options = new CosmosDbAccountOptions(accountResource);
         configure(options);

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Achieve.Aspire.AzureProvisioning.Tests.Utils;
 using Aspire.Hosting;
+using Aspire.Hosting.Azure;
 using Azure.ResourceManager.Models;
 using Xunit.Abstractions;
 
@@ -8,6 +9,14 @@ namespace Achieve.Aspire.AzureProvisioning.Tests;
 
 public class IdentityTests(ITestOutputHelper output)
 {
+    [Fact]
+    public void AzureProvisionerIsAdded()
+    {
+        using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
+        var cosmos = builder.AddManagedIdentity("testid");
+        Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
+    }
+    
     [Fact]
     public async Task ManagedIdentityGetsAddedForDeployment()
     {

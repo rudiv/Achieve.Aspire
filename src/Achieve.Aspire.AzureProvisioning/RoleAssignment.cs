@@ -23,6 +23,8 @@ public static class RoleAssignmentExtensions
         {
             return default;
         }
+
+        builder.AddAzureProvisioning();
         
         var bicepFileOutput = BicepFileOutput.GetAspireFileOutput();
         bicepFileOutput.AddParameter(new BicepParameter("resourceName", BicepSupportedType.String, Description: "The target resource."));
