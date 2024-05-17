@@ -117,6 +117,22 @@ public class StringExtensionTests
         var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number);
         Assert.True(result);
     }
+
+    [Fact]
+    public void ShouldNotAllowPeriods()
+    {
+        const string test = "test.93";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldAllowPeriods()
+    {
+        const string test = "test.93";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric | StringExtensions.CharacterClass.Period);
+        Assert.True(result);
+    }
     
     [Fact]
     public void ShouldValidateStartingCharacterAsSuccess()

@@ -41,6 +41,10 @@ internal static class StringExtensions
         /// </summary>
         Number = 0b_100000,
         /// <summary>
+        /// Reflects a period.
+        /// </summary>
+        Period = 0b_1000000,
+        /// <summary>
         /// Reflects an alphabetic character.
         /// </summary>
         Alphabetic = UppercaseLetter | LowercaseLetter,
@@ -118,6 +122,9 @@ internal static class StringExtensions
 
         if (((CharacterClass)contains).HasFlag(CharacterClass.Hyphen))
             allowedChars.Add('-');
+
+        if (((CharacterClass) contains).HasFlag(CharacterClass.Period))
+            allowedChars.Add('.');
         
         // Check each character in the input string
         return str.All(c => allowedChars.Contains(c));
