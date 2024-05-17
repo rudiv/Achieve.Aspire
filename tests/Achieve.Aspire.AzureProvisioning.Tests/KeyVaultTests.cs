@@ -16,7 +16,7 @@ public class KeyVaultTests(ITestOutputHelper output)
     public void AzureProvisionerIsAdded()
     {
         using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
-        var kv = builder.AddZtAzureKeyVault("kv", _ => { });
+        var _ = builder.AddZtAzureKeyVault("kv", _ => { });
         Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
     }
     
