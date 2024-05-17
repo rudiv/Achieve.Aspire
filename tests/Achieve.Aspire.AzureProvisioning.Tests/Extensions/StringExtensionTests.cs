@@ -5,6 +5,14 @@ namespace Achieve.Aspire.AzureProvisioning.Tests.Extensions;
 public class StringExtensionTests
 {
     [Fact]
+    public void ShouldPassIfNoConstraintsSpecified()
+    {
+        const string test = "abc123";
+        var result = test.MatchesConstraints();
+        Assert.True(result);
+    }
+    
+    [Fact]
     public void ShouldFailWhenLengthIsTooShort()
     {
         const string test = "a";
@@ -108,5 +116,45 @@ public class StringExtensionTests
         const string test = "test--993";
         var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number);
         Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateStartingCharacterAsSuccess()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            startsWith: StringExtensions.CharacterClass.Number | StringExtensions.CharacterClass.LowercaseLetter);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateStartingCharacterAsFailure()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            startsWith: StringExtensions.CharacterClass.Number);
+        Assert.False(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateEndingCharacterAsSuccess()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            endsWith: StringExtensions.CharacterClass.Alphanumeric);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateEndingCharacterAsFailure()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            endsWith: StringExtensions.CharacterClass.Alphabetic);
+        Assert.False(result);
     }
 }
