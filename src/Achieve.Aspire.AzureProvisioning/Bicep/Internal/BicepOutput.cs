@@ -27,12 +27,15 @@ public record BicepOutput(string Name, BicepSupportedType Type, string Path) : I
         // This generates depending on the output path, super hacky for now
         // There will be a better way, but for now...
         var splitPath = Path.Split('.');
+        var first = splitPath[0];
+        var second = splitPath.Length > 1 ? splitPath[1] : splitPath[0];
+        
         var propertyAccess =
             new PropertyAccessSyntax(
-                new VariableAccessSyntax(SyntaxFactory.CreateIdentifier(splitPath[0])),
+                new VariableAccessSyntax(SyntaxFactory.CreateIdentifier(first)),
                 SyntaxFactory.DotToken,
                 null,
-                SyntaxFactory.CreateIdentifier(splitPath[1]));
+                SyntaxFactory.CreateIdentifier(second));
         if (splitPath.Length > 2)
         {
             for (var i = 2; i < splitPath.Length; i++)
