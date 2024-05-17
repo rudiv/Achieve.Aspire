@@ -150,6 +150,8 @@ builder.AddAzureCosmosDBClient("cosmos",
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers
 - [ ] (0.2.X) Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions
+- [x] (0.2.5 - live) Microsoft.Batch/batchAccounts (thanks to [@WhitWaldo](https://github.com/WhitWaldo) for the contribution)
+- [x] (0.2.5 - live) Microsoft.Batch/batchAccounts/certificates (thanks to [@WhitWaldo](https://github.com/WhitWaldo) for the contribution)
 
 * Denotes that support for these resources is implemented via Azure.Provisioning.
 

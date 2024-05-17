@@ -15,7 +15,7 @@ public class RoleAssignmentTests(ITestOutputHelper output)
       using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
       var id = builder.AddManagedIdentity("testid");
       var kv = builder.AddZtAzureKeyVault("kv", o => { });
-      var ra = builder.AddAzureRoleAssignment(kv, id, KeyVaultRoles.CertificateUser);
+      var _ = builder.AddAzureRoleAssignment(kv, id, KeyVaultRoles.CertificateUser);
       Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
     }
   

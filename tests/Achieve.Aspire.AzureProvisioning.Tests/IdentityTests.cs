@@ -13,7 +13,7 @@ public class IdentityTests(ITestOutputHelper output)
     public void AzureProvisionerIsAdded()
     {
         using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
-        var cosmos = builder.AddManagedIdentity("testid");
+        var _ = builder.AddManagedIdentity("testid");
         Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
     }
     

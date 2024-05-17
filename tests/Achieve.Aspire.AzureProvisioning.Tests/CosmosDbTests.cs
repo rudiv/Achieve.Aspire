@@ -14,7 +14,7 @@ public class CosmosDbTests(ITestOutputHelper output)
   public void AzureProvisionerIsAdded()
   {
     using var builder = TestDistributedApplicationBuilder.Create(DistributedApplicationOperation.Publish);
-    var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc => {});
+    var _ = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc => {});
     Assert.Contains(builder.Services, m => m.ServiceKey != null && m.ServiceKey as Type == typeof(AzureBicepResource));
   }
   
