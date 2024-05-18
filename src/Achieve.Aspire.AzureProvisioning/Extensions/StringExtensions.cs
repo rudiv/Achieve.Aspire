@@ -114,8 +114,8 @@ internal static class StringExtensions
             if (((CharacterClass)constraint).HasFlag(CharacterClass.Period))
                 allowedChars.Add('.');
 
-            if (((CharacterClass)constraint).HasFlag(CharacterClass.Parentheses))
-                allowedChars.AddRange([ '(', ')' ]);
+            if (((CharacterClass) constraint).HasFlag(CharacterClass.Parentheses)) 
+                allowedChars.UnionWith(['(', ')']);
 
             return value.All(c => allowedChars.Contains(c) == !checkAsNot);
         }
