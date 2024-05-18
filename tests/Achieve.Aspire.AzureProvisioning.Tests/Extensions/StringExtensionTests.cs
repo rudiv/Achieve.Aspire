@@ -5,6 +5,14 @@ namespace Achieve.Aspire.AzureProvisioning.Tests.Extensions;
 public class StringExtensionTests
 {
     [Fact]
+    public void ShouldPassIfNoConstraintsSpecified()
+    {
+        const string test = "abc123";
+        var result = test.MatchesConstraints();
+        Assert.True(result);
+    }
+    
+    [Fact]
     public void ShouldFailWhenLengthIsTooShort()
     {
         const string test = "a";
@@ -21,7 +29,7 @@ public class StringExtensionTests
     }
 
     [Fact]
-    public void ShoudlAcceptValidLength()
+    public void ShouldAcceptValidLength()
     {
         const string test = "ThisIsATest";
         var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Any);
@@ -51,6 +59,14 @@ public class StringExtensionTests
         var result = test.MatchesConstraints(2, 25, StringExtensions.CharacterClass.Alphabetic);
         Assert.False(result);
     }
+
+    [Fact]
+    public void ShouldNotAllowAlphabeticCharacters()
+    {
+        const string test = "!@# #$%";
+        var result = test.MatchesConstraints(doesNotContain: StringExtensions.CharacterClass.Alphabetic);
+        Assert.True(result);
+    }
     
     [Fact]
     public void ShouldAcceptAlphanumericCharacters()
@@ -74,6 +90,14 @@ public class StringExtensionTests
         const string test = "Test007";
         var result = test.MatchesConstraints(3, 25,
             StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.UppercaseLetter | StringExtensions.CharacterClass.Number);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldNotAllowAlphaNumeric()
+    {
+        const string test = "!@#$%";
+        var result = test.MatchesConstraints(doesNotContain: StringExtensions.CharacterClass.Alphanumeric);
         Assert.True(result);
     }
 
@@ -103,10 +127,123 @@ public class StringExtensionTests
     }
 
     [Fact]
+    public void ShouldNotAllowUnderscores()
+    {
+        const string test = "test_893";
+        var result = test.MatchesConstraints(doesNotContain: StringExtensions.CharacterClass.Underscore);
+        Assert.False(result);
+    }
+
+    [Fact]
     public void ShouldAllowHyphens()
     {
         const string test = "test--993";
         var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number);
         Assert.True(result);
+    }
+
+    [Fact]
+    public void ShouldNotAllowPeriods()
+    {
+        const string test = "test.93";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldAllowPeriods()
+    {
+        const string test = "test.93";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric | StringExtensions.CharacterClass.Period);
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ShouldNotAllowParentheses()
+    {
+        const string test = "test(93)";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldAllowParentheses()
+    {
+        const string test = "test(93)";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.Alphanumeric | StringExtensions.CharacterClass.Parentheses);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateStartingCharacterAsSuccess()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            startsWith: StringExtensions.CharacterClass.Number | StringExtensions.CharacterClass.LowercaseLetter);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateStartingCharacterAsFailure()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            startsWith: StringExtensions.CharacterClass.Number);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldFailSinceTheValueShouldNotStartWithANumber()
+    {
+        const string test = "23test";
+        var result = test.MatchesConstraints(doesNotStartWith: StringExtensions.CharacterClass.Number);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldPassSinceTheValueDoesNotStartWithANumber()
+    {
+        const string test = "test32";
+        var result = test.MatchesConstraints(doesNotStartWith: StringExtensions.CharacterClass.Number);
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ShouldValidateEndingCharacterAsSuccess()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            endsWith: StringExtensions.CharacterClass.Alphanumeric);
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ShouldFailAsTheValueShouldNotEndWithNumbers()
+    {
+        const string test = "test-33";
+        var result = test.MatchesConstraints(doesNotEndWith: StringExtensions.CharacterClass.Number);
+        Assert.False(result);
+    }
+    
+    [Fact]
+    public void ShouldPassSinceTheValueDoesNotEndWithNumbers()
+    {
+        const string test = "test-33a";
+        var result = test.MatchesConstraints(doesNotEndWith: StringExtensions.CharacterClass.Number);
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void ShouldValidateEndingCharacterAsFailure()
+    {
+        const string test = "test--993";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.LowercaseLetter | StringExtensions.CharacterClass.Hyphen | StringExtensions.CharacterClass.Number,
+            endsWith: StringExtensions.CharacterClass.Alphabetic);
+        Assert.False(result);
     }
 }
