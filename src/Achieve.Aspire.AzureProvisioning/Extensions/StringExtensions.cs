@@ -1,7 +1,3 @@
-
-
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.SRM;
 using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
 
 namespace Achieve.Aspire.AzureProvisioning.Extensions;
@@ -20,35 +16,35 @@ internal static class StringExtensions
         /// <summary>
         /// Reflects an uppercase letter character.
         /// </summary>
-        UppercaseLetter = 0b_1,
+        UppercaseLetter = 1,
         /// <summary>
         /// Reflects a lowercase letter character.
         /// </summary>
-        LowercaseLetter = 0b_10,
+        LowercaseLetter = 2,
         /// <summary>
         /// Reflects an underscore character.
         /// </summary>
-        Underscore = 0b_100,
+        Underscore = 4,
         /// <summary>
         /// Reflects a hyphen character.
         /// </summary>
-        Hyphen = 0b_1000,
+        Hyphen = 8,
         /// <summary>
         /// Reflects a whitespace character.
         /// </summary>
-        Whitespace = 0b_10000,
+        Whitespace = 16,
         /// <summary>
         /// Reflects a number.
         /// </summary>
-        Number = 0b_100000,
+        Number = 32,
         /// <summary>
         /// Reflects a period.
         /// </summary>
-        Period = 0b_1000000,
+        Period = 64,
         /// <summary>
         /// Reflects either open or close parentheses.
         /// </summary>
-        Parentheses =0b_10000000, 
+        Parentheses = 128, 
         /// <summary>
         /// Reflects an alphabetic character.
         /// </summary>
@@ -70,71 +66,58 @@ internal static class StringExtensions
     /// <param name="minLength">The minimum allowed length of the string.</param>
     /// <param name="maxLength">The maximum allowed length of the string.</param>
     /// <param name="contains">The types of characters allowed in the string.</param>
+    /// <param name="doesNotContain">The types of characters not allowed in the string.</param>
     /// <param name="startsWith">The types of characters allowed for the string to start with, if any.</param>
+    /// <param name="doesNotStartWith">The types of characters the string is not allowed to start with, if any.</param>
     /// <param name="endsWith">The types of characters allowed for the string to end with, if any.</param>
+    /// <param name="doesNotEndWith">The types of characters the string is not allowed to end with, if any.</param>
     /// <returns>True if the string matches the provided constraints; otherwise false.</returns>
-    public static bool MatchesConstraints(this string str, int? minLength = null, int? maxLength = null, CharacterClass? contains = null, CharacterClass? startsWith = null, CharacterClass? endsWith = null)
+    public static bool MatchesConstraints(this string str, int? minLength = null, int? maxLength = null, CharacterClass? contains = null, CharacterClass? doesNotContain = null, CharacterClass? startsWith = null, CharacterClass? doesNotStartWith = null, CharacterClass? endsWith = null, CharacterClass? doesNotEndWith = null)
     {
+        //Validate the length constraints
         if ((minLength is not null && str.Length < minLength) || (maxLength is not null && str.Length > maxLength))
             return false;
 
-        //Validate that the string starts with the specified constraint
-        if (startsWith is not null)
-        {
-            if (str.Length > 0)
-            {
-                var startingCharacter = Enumerable.First(str);
-                var startingCharacterResult =
-                    MatchesConstraints(startingCharacter.ToString(), 1, 1, (CharacterClass) startsWith);
-                if (!startingCharacterResult)
-                    return false;
-            }
-        }
-
-        //Validate that the string ends with the specified constraint
-        if (endsWith is not null)
-        {
-            if (str.Length > 0)
-            {
-                var endingCharacter = Enumerable.Last(str);
-                var endingCharacterResult =
-                    MatchesConstraints(endingCharacter.ToString(), 1, 1, (CharacterClass) endsWith);
-                if (!endingCharacterResult)
-                    return false;
-            }
-        }
-
-        if (contains is null)
+        //If there's no string length and we've otherwise met the length constraints, skip the remaining checks
+        if (str.Length == 0)
             return true;
 
-        if (((CharacterClass)contains).HasFlag(CharacterClass.Any))
-            return true;
-        
-        //Create a set of allowed characters based on the flags
-        var allowedChars = new HashSet<char>();
-        
-        if (((CharacterClass)contains).HasFlag(CharacterClass.UppercaseLetter))
-            allowedChars.UnionWith("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        return ValidateConstraint(str.First().ToString(), startsWith) &&
+               ValidateConstraint(str.First().ToString(), doesNotStartWith, true) &&
+               ValidateConstraint(str.Last().ToString(), endsWith) &&
+               ValidateConstraint(str.Last().ToString(), doesNotEndWith, true) &&
+               ValidateConstraint(str, contains) &&
+               ValidateConstraint(str, doesNotContain, true);
 
-        if (((CharacterClass)contains).HasFlag(CharacterClass.LowercaseLetter))
-            allowedChars.UnionWith("abcdefghijklmnopqrstuvwxyz");
+        bool ValidateConstraint(string value, CharacterClass? constraint, bool checkAsNot = false)
+        {
+            if (constraint == null)
+                return true;
+            
+            var allowedChars = new HashSet<char>();
 
-        if (((CharacterClass)contains).HasFlag(CharacterClass.Number))
-            allowedChars.UnionWith("0123456789");
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.UppercaseLetter))
+                allowedChars.UnionWith("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-        if (((CharacterClass)contains).HasFlag(CharacterClass.Underscore))
-            allowedChars.Add('_');
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.LowercaseLetter))
+                allowedChars.UnionWith("abcdefghijklmnopqrstuvwxyz");
 
-        if (((CharacterClass)contains).HasFlag(CharacterClass.Hyphen))
-            allowedChars.Add('-');
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.Number))
+                allowedChars.UnionWith("0123456789");
 
-        if (((CharacterClass) contains).HasFlag(CharacterClass.Period))
-            allowedChars.Add('.');
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.Underscore))
+                allowedChars.Add('_');
 
-        if (((CharacterClass) contains).HasFlag(CharacterClass.Parentheses)) 
-            allowedChars.AddRange(['(', ')']);
-        
-        // Check each character in the input string
-        return str.All(c => allowedChars.Contains(c));
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.Hyphen))
+                allowedChars.Add('-');
+
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.Period))
+                allowedChars.Add('.');
+
+            if (((CharacterClass)constraint).HasFlag(CharacterClass.Parentheses))
+                allowedChars.AddRange([ '(', ')' ]);
+
+            return value.All(c => allowedChars.Contains(c) == !checkAsNot);
+        }
     }
 }
