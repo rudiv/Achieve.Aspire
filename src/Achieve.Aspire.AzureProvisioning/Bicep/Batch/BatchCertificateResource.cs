@@ -20,9 +20,8 @@ public sealed class BatchCertificateResource : BicepResource
     
     public string Thumbprint { get; set; }
     
-    public string ThumbprintAlgorithm => "SHA1";
+    public static string ThumbprintAlgorithm => "SHA1";
     
-
     public BatchCertificateResource(BatchAccountResource parent, string name) : base(resourceType)
     {
         Parent = parent;

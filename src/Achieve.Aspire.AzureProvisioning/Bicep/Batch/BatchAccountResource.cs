@@ -46,7 +46,7 @@ public sealed class BatchAccountResource : BicepResource
 
     protected override void ValidateResourceType()
     {
-        if (Name.MatchesConstraints(3, 24, StringExtensions.CharacterClass.LowercaseLetter))
+        if (!AccountName.MatchesConstraints(3, 24, StringExtensions.CharacterClass.LowercaseLetter))
         {
             throw new InvalidOperationException(
                 "Name must be between 3-24 characters and must contain only lowercase letters and numbers");
@@ -159,12 +159,12 @@ public sealed class BatchAccountResource : BicepResource
             }
             networkProfileBag.AddProperty(accountAccessBag);
             
-            
-            //NOde management access
+            //Node management access
             var nodeManagementAccessBag = new BicepResourcePropertyBag("nodeManagementAccess", 3)
                 .AddProperty("defaultAccess",
                     new BicepStringValue(
                         Properties.NetworkProfile.NodeManagementAccess.DefaultAction.GetValueFromEnumMember()));
+            networkProfileBag.AddProperty(nodeManagementAccessBag);
             
             var nodeIpRules = new BicepResourcePropertyArray("ipRules", 4);
             foreach (var rule in Properties.NetworkProfile.NodeManagementAccess.IpRules)
