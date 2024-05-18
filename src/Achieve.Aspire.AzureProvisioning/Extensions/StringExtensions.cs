@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.SRM;
+using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
 
 namespace Achieve.Aspire.AzureProvisioning.Extensions;
 
@@ -45,6 +46,10 @@ internal static class StringExtensions
         /// </summary>
         Period = 0b_1000000,
         /// <summary>
+        /// Reflects either open or close parentheses.
+        /// </summary>
+        Parentheses =0b_10000000, 
+        /// <summary>
         /// Reflects an alphabetic character.
         /// </summary>
         Alphabetic = UppercaseLetter | LowercaseLetter,
@@ -78,7 +83,7 @@ internal static class StringExtensions
         {
             if (str.Length > 0)
             {
-                var startingCharacter = str.First();
+                var startingCharacter = Enumerable.First(str);
                 var startingCharacterResult =
                     MatchesConstraints(startingCharacter.ToString(), 1, 1, (CharacterClass) startsWith);
                 if (!startingCharacterResult)
@@ -91,7 +96,7 @@ internal static class StringExtensions
         {
             if (str.Length > 0)
             {
-                var endingCharacter = str.Last();
+                var endingCharacter = Enumerable.Last(str);
                 var endingCharacterResult =
                     MatchesConstraints(endingCharacter.ToString(), 1, 1, (CharacterClass) endsWith);
                 if (!endingCharacterResult)
@@ -125,6 +130,9 @@ internal static class StringExtensions
 
         if (((CharacterClass) contains).HasFlag(CharacterClass.Period))
             allowedChars.Add('.');
+
+        if (((CharacterClass) contains).HasFlag(CharacterClass.Parentheses)) 
+            allowedChars.AddRange(['(', ')']);
         
         // Check each character in the input string
         return str.All(c => allowedChars.Contains(c));

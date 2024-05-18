@@ -133,6 +133,23 @@ public class StringExtensionTests
         var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric | StringExtensions.CharacterClass.Period);
         Assert.True(result);
     }
+
+    [Fact]
+    public void ShouldNotAllowParentheses()
+    {
+        const string test = "test(93)";
+        var result = test.MatchesConstraints(3, 25, StringExtensions.CharacterClass.Alphanumeric);
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ShouldAllowParentheses()
+    {
+        const string test = "test(93)";
+        var result = test.MatchesConstraints(3, 25,
+            StringExtensions.CharacterClass.Alphanumeric | StringExtensions.CharacterClass.Parentheses);
+        Assert.True(result);
+    }
     
     [Fact]
     public void ShouldValidateStartingCharacterAsSuccess()
