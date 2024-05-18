@@ -44,7 +44,7 @@ internal static class StringExtensions
         /// <summary>
         /// Reflects either open or close parentheses.
         /// </summary>
-        Parentheses = 128, 
+        Parentheses = 128,
         /// <summary>
         /// Reflects an alphabetic character.
         /// </summary>
@@ -56,7 +56,7 @@ internal static class StringExtensions
         /// <summary>
         /// Reflects any character as being valid.
         /// </summary>
-        Any = UppercaseLetter | LowercaseLetter | Number | Underscore | Hyphen | Whitespace
+        Any = UppercaseLetter | LowercaseLetter | Number | Underscore | Hyphen | Whitespace | Period | Parentheses
     }
 
     /// <summary>
