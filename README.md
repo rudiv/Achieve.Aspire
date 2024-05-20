@@ -88,8 +88,8 @@ var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc =>
     // During Development, you can either use the emulator (suggest using the Aspire.Hosting.Azure.CosmosDB package), or
     // provision it in the cloud with development defaults (public access, serverless, etc).  
     if (builder.ExecutionContext.IsRunMode) {
-        ac.Resource.WithDevelopmentDefaults();
-        ac.WithDevelopmentGlobalAccess(); // Adds your local principal to have access to everything in the account
+        acc.Resource.WithDevelopmentDefaults();
+        acc.WithDevelopmentGlobalAccess(); // Adds your local principal to have access to everything in the account
     }
     var db = acc.AddDatabase("db");
     var cn = db.AddContainer("cn", cn =>
@@ -99,7 +99,7 @@ var cosmos = builder.AddAzureCosmosDbNoSqlAccount("cosmos", acc =>
     
     if (builder.ExecutionContext.IsPublishMode) {
         // Add a Managed Identity to the Cosmos DB
-        ac.AddRoleAssignment(acc.Resource, id, CosmosDbSqlBuiltInRoles.Contributor);
+        acc.AddRoleAssignment(acc.Resource, id, CosmosDbSqlBuiltInRoles.Contributor);
         //ac.AddRoleAssignment(db.Resource, id, CosmosDbSqlBuiltInRoles.Contributor); // Or the Database
         //ac.AddRoleAssignment(cn, id, CosmosDbSqlBuiltInRoles.Contributor); // Or the Container
     }
@@ -153,7 +153,7 @@ builder.AddAzureCosmosDBClient("cosmos",
 - [x] (0.2.5 - live) Microsoft.Batch/batchAccounts (thanks to [@WhitWaldo](https://github.com/WhitWaldo) for the contribution)
 - [x] (0.2.5 - live) Microsoft.Batch/batchAccounts/certificates (thanks to [@WhitWaldo](https://github.com/WhitWaldo) for the contribution)
 
-* Denotes that support for these resources is implemented via Azure.Provisioning.
+*** Denotes that support for these resources is implemented via Azure.Provisioning.
 
 ## Current State / Version
 

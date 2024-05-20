@@ -41,6 +41,7 @@
       <PackageReference Include="Azure.Provisioning" Version="0.2.0" />
       <PackageReference Include="Azure.Provisioning.KeyVault" Version="0.1.0" />
       <PackageReference Include="Azure.Provisioning.Resources" Version="0.1.0" />
+      <PackageReference Include="Azure.Provisioning.Storage" Version="0.1.0" />
       <PackageReference Include="MinVer" Version="5.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -1,9 +1,7 @@
-using System.Text.Json;
 using Achieve.Aspire.AzureProvisioning.Bicep.CosmosDb;
 using Achieve.Aspire.AzureProvisioning.Tests.Utils;
 using Aspire.Hosting;
 using Aspire.Hosting.Azure;
-using Azure.ResourceManager.Models;
 using Xunit.Abstractions;
 
 namespace Achieve.Aspire.AzureProvisioning.Tests;
