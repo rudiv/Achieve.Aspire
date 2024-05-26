@@ -171,7 +171,7 @@ them I'm more than happy to accept PRs or look at implementing things myself, ju
 - 0.2.1 - Adds convenience methods for Role Assignments
 - 0.2.X - More resources (see above). Tidy up/unify the APIs a little.
 - 0.2.5 - Adds Batch and Batch Certificates thanks to [@WhitWaldo](https://github.com/WhitWaldo).
-- 0.2.6 - Fixes RoleAssignment and adds Maps. GA (8.0.1) release of Aspire.
+- 0.2.7 - Fixes RoleAssignment and adds Maps. GA (8.0.1) release of Aspire.
 - 0.3.0 - Add a tool to complement `azd` so that the below is not required.
 - 0.4.0 - Use above tool to also allow full customisation of the generated Bicep templates, down to the Container App Environment.
 - X.X.X - ???
