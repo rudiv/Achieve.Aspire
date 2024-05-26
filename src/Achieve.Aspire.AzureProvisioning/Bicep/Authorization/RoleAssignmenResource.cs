@@ -30,11 +30,13 @@ public class RoleAssignmentResource : BicepResource
                 new BicepPropertyAccessValue(new BicepVariableValue(Scope.Name), "id"),
                 roleDefId)));
         Body.Add(new BicepResourceProperty(BicepResourceProperties.Location, new BicepVariableValue("location")));
+        Body.Add(new BicepResourceProperty(BicepResourceProperties.Scope, new BicepVariableValue(Scope.Name)));
 
         var propertyBag = new BicepResourcePropertyBag(BicepResourceProperties.Properties, 2);
         propertyBag.AddProperty(new BicepResourceProperty(PropertyPrincipalId, PrincipalId));
         propertyBag.AddProperty(new BicepResourceProperty(PropertyRoleDefinitionId, roleDefId));
         propertyBag.AddProperty(new BicepResourceProperty(PropertyPrincipalType, new BicepStringValue(PrincipalType.ToString())));
+        Body.Add(propertyBag);
     }
 }
 

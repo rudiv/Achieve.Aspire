@@ -125,3 +125,16 @@ arr: [
   }
 ]
 ```
+
+## "Existing" Resource Support
+
+Currently, Role Assignments require an "Existing" resource to be defined in the same Bicep. See #4 for a potential 
+alternative approach.
+
+To implement Existing support (so Role Assignments can work), override AsExisting. This is very basic, though not 
+automatic until #3 is solved to standardise the Account.
+
+```csharp
+    // where AccountName is the actual "name" property in the Bicep
+    public override BicepResource AsExisting() => new ExistingBicepResource(resourceType, AccountName);
+```

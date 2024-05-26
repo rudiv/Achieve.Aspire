@@ -35,6 +35,8 @@ public abstract class BicepResource(string type) : IBicepSyntaxGenerator
     protected virtual void ValidateResourceType() { }
 
     public abstract void Construct();
+
+    public virtual BicepResource AsExisting() => throw new NotImplementedException("This resource does not yet support AsExisting.");
     
     public SyntaxBase ToBicepSyntax()
     {

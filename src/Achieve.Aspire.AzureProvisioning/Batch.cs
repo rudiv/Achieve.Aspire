@@ -25,14 +25,14 @@ public static class Batch
             fileOutput.AddResource(certificate.Value.Resource);
         }
         
-        var resource = new AzureBatchResource(name, fileOutput);
+        var resource = new AzureBatchResource(name, fileOutput, accountResource);
         var resourceBuilder = builder.AddResource(resource);
 
         return resourceBuilder.WithManifestPublishingCallback(resource.WriteToManifest);
     }
     
-    public class AzureBatchResource(string name, BicepFileOutput bicepFileOutput)
-        : AchieveResource(name, bicepFileOutput)
+    public class AzureBatchResource(string name, BicepFileOutput bicepFileOutput, BicepResource underlyingBicepResource)
+        : AchieveResource(name, bicepFileOutput, underlyingBicepResource)
     {
         public const string BatchResourceName = "resourceName";
 

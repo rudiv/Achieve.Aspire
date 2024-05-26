@@ -13,6 +13,79 @@ namespace Achieve.Aspire.AzureProvisioning;
 
 public static class RoleAssignmentExtensions
 {
+    public static IResourceBuilder<AzureRoleAssignmentResource> AddDevelopmentRoleAssignment(this IDistributedApplicationBuilder builder,
+        IResourceBuilder<AchieveResource> targetAchieveResource,
+        RoleDefinition roleDefinition)
+    {
+        if (builder.ExecutionContext.IsPublishMode)
+        {
+            return default!;
+        }
+        
+        if (targetAchieveResource.Resource.UnderlyingResource is null)
+        {
+            throw new InvalidOperationException("The underlying resource does not support AsExisting().");
+        }
+        
+        builder.AddAzureProvisioning();
+
+        var bicepFileOutput = BicepFileOutput.GetAspireFileOutput(true);
+        var scope = targetAchieveResource.Resource.UnderlyingResource.AsExisting();
+        bicepFileOutput.AddResource(scope);
+        
+        bicepFileOutput.AddResource(new RoleAssignmentResource
+        {
+            Scope = scope,
+            RoleDefinitionId = roleDefinition.ToString(),
+            PrincipalId = new BicepVariableValue("principalId"),
+            PrincipalType = RoleAssignmentPrincipalType.ServicePrincipal,
+        });
+        
+        var name = "ra" + Helpers.StableIdentifier(scope.Name + roleDefinition);
+        var resource = new AzureRoleAssignmentResource(name, bicepFileOutput);
+        return builder.AddResource(resource)
+            .WithManifestPublishingCallback(resource.WriteToManifest);
+    }
+    
+    public static IResourceBuilder<AzureRoleAssignmentResource>? AddAzureRoleAssignment(this IDistributedApplicationBuilder builder,
+        IResourceBuilder<AchieveResource> targetAchieveResource,
+        IResourceBuilder<AzureManagedIdentityResource> managedIdentity,
+        RoleDefinition roleDefinition)
+    {
+        if (!builder.ExecutionContext.IsPublishMode)
+        {
+            return default;
+        }
+
+        if (targetAchieveResource.Resource.UnderlyingResource is null)
+        {
+            throw new InvalidOperationException("The underlying resource does not support AsExisting().");
+        }
+        
+        builder.AddAzureProvisioning();
+
+        var bicepFileOutput = BicepFileOutput.GetAspireFileOutput();
+        bicepFileOutput.AddParameter(new BicepParameter("principalId", BicepSupportedType.String, Description: "The principal ID."));
+        
+        // We need to generate this as Existing as it's a separate file, the identifier can't be passed around
+        var scope = targetAchieveResource.Resource.UnderlyingResource.AsExisting();
+        bicepFileOutput.AddResource(scope);
+        
+        bicepFileOutput.AddResource(new RoleAssignmentResource
+        {
+            Scope = scope,
+            RoleDefinitionId = roleDefinition.ToString(),
+            PrincipalId = new BicepVariableValue("principalId"),
+            PrincipalType = RoleAssignmentPrincipalType.ServicePrincipal,
+        });
+        
+        var name = "ra" + Helpers.StableIdentifier(scope.Name + managedIdentity.Resource.Name + roleDefinition);
+        var resource = new AzureRoleAssignmentResource(name, bicepFileOutput);
+        return builder.AddResource(resource)
+            .WithParameter("principalId", managedIdentity.GetOutput("principalId"))
+            .WithManifestPublishingCallback(resource.WriteToManifest);
+    }
+    
     public static IResourceBuilder<AzureRoleAssignmentResource>? AddAzureRoleAssignment(this IDistributedApplicationBuilder builder,
         IResourceBuilder<AzureConstructResource> targetConstructResource,
         IResourceBuilder<AzureManagedIdentityResource> managedIdentity,

@@ -3,8 +3,22 @@ using Aspire.Hosting.Azure;
 
 namespace Achieve.Aspire.AzureProvisioning.Resources;
 
-public class AchieveResource(string name, BicepFileOutput fileOutput) : AzureBicepResource(name, templateFile: name + ".achieve.bicep")
+public class AchieveResource : AzureBicepResource
 {
+    private readonly BicepFileOutput fileOutput;
+    internal readonly BicepResource? UnderlyingResource;
+    
+    public AchieveResource(string name, BicepFileOutput fileOutput) : base(name, templateFile: name + ".achieve.bicep")
+    {
+        this.fileOutput = fileOutput;
+    }
+
+    public AchieveResource(string name, BicepFileOutput fileOutput, BicepResource underlyingBicepResource) : base(name, templateFile: name + ".achieve.bicep")
+    {
+        this.fileOutput = fileOutput;
+        this.UnderlyingResource = underlyingBicepResource;
+    }
+    
     /// <inheritdoc />
     public override BicepTemplateFile GetBicepTemplateFile(string? directory = null, bool deleteTemporaryFileOnDispose = true)
     {

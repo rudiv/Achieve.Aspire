@@ -58,7 +58,7 @@ public static class CosmosDbExtensions
         
         fileOutput.AddOutput(new BicepOutput(AzureCosmosDbResource.AccountEndpointOutput, BicepSupportedType.String, accountResource.Name + ".properties.documentEndpoint"));
 
-        var resource = new AzureCosmosDbResource(name, fileOutput);
+        var resource = new AzureCosmosDbResource(name, fileOutput, accountResource);
         var resourceBuilder = builder.AddResource(resource);
         if (options.EnablePassPrincipalId)
         {
@@ -74,7 +74,8 @@ public static class CosmosDbExtensions
         return resourceBuilder.WithManifestPublishingCallback(resource.WriteToManifest);
     }
     
-    public class AzureCosmosDbResource(string name, BicepFileOutput bicepFileOutput) : AchieveResource(name, bicepFileOutput), IResourceWithConnectionString
+    public class AzureCosmosDbResource(string name, BicepFileOutput bicepFileOutput, BicepResource underlyingBicepResource) :
+        AchieveResource(name, bicepFileOutput, underlyingBicepResource), IResourceWithConnectionString
     {
         public const string AccountEndpointOutput = "accountEndpoint";
         
