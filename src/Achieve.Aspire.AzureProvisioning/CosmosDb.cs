@@ -141,7 +141,7 @@ public class CosmosDbAccountOptions(CosmosDbAccountResource resource)
     }
 
     public CosmosDbAccountOptions WithRoleAssignment(BicepResource scope, IResourceBuilder<AzureManagedIdentityResource> identity, CosmosDbSqlBuiltInRole role) =>
-        WithRoleAssignment(scope, identity.GetOutput("PrincipalId"), role);
+        WithRoleAssignment(scope, identity.GetOutput("principalId"), role);
 }
 
 public class CosmosDbDatabaseOptions(CosmosDbAccountOptions parent, CosmosDbSqlDatabaseResource sqlDatabase)

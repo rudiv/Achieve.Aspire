@@ -141,7 +141,7 @@ public class CosmosDbTests(ITestOutputHelper output)
                                "path": "cosmos.achieve.bicep",
                                "params": {
                                  "principalId": "",
-                                 "testidPrincipal": "{testid.outputs.PrincipalId}"
+                                 "testidPrincipal": "{testid.outputs.principalId}"
                                }
                              }
                              """;
